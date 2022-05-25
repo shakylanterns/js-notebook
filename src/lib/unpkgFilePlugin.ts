@@ -28,7 +28,7 @@ export const unpkgFilePlugin = (input: string): Plugin => {
         };
       });
 
-      // the catch-all case, or the main file of a package
+      // the catch-all case, this handles the package base and css files
       // all the files inside a package are resolved in the last handler
       build.onResolve({ filter: /.*/ }, (args) => {
         return {
@@ -42,6 +42,28 @@ export const unpkgFilePlugin = (input: string): Plugin => {
         return {
           contents: input,
           loader: "jsx",
+        };
+      });
+
+      build.onLoad({ filter: /\.css$/, namespace: "u" }, async (args) => {
+        const result = await fetch(args.path);
+        // "" strings in javascript are very sensitive to new lines and quotes
+        // we must remove them first
+        // however this is different from minifying the styles
+        const text = (await result.text())
+          .replace(/\n/g, "")
+          .replace(/'/g, "\\'")
+          // I could have used triple escapes here but this looks less confusing
+          .replace(/"/g, '\\"');
+        const injectedCSS = `
+          const style = document.createElement("style");
+          style.text = "${text}";
+          document.head.appendChild(style);
+        `;
+        return {
+          contents: injectedCSS,
+          loader: "jsx",
+          resolveDir: new URL(".", result.url).pathname,
         };
       });
 
