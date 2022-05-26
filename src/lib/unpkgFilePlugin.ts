@@ -1,4 +1,5 @@
-import { Plugin } from "esbuild-wasm";
+import { OnLoadResult, Plugin } from "esbuild-wasm";
+import { get, set } from "idb-keyval";
 
 export const unpkgFilePlugin = (input: string): Plugin => {
   return {
@@ -46,38 +47,53 @@ export const unpkgFilePlugin = (input: string): Plugin => {
       });
 
       build.onLoad({ filter: /\.css$/, namespace: "u" }, async (args) => {
+        const cached = await get<OnLoadResult>(args.path);
+        if (cached) {
+          return cached;
+        }
+
         const result = await fetch(args.path);
-        // "" strings in javascript are very sensitive to new lines and quotes
-        // we must remove them first
-        // however this is different from minifying the styles
         const text = (await result.text())
           .replace(/\n/g, "")
           .replace(/'/g, "\\'")
           // I could have used triple escapes here but this looks less confusing
           .replace(/"/g, '\\"');
+
+        // "" strings in javascript are very sensitive to new lines and quotes
+        // we must remove them first
+        // however this is different from minifying the styles
         const injectedCSS = `
           const style = document.createElement("style");
           style.text = "${text}";
           document.head.appendChild(style);
         `;
-        return {
+        const toBeCached: OnLoadResult = {
           contents: injectedCSS,
           loader: "jsx",
           resolveDir: new URL(".", result.url).pathname,
         };
+
+        await set(args.path, toBeCached);
+        return toBeCached;
       });
 
       // all files other than index.js
       build.onLoad({ filter: /.*/, namespace: "u" }, async (args) => {
+        const cached = await get<OnLoadResult>(args.path);
+        if (cached) {
+          return cached;
+        }
         // this will ask unpkg to give the file
         const result = await fetch(args.path);
         const text = await result.text();
-        return {
+        const toBeCached: OnLoadResult = {
           contents: text,
           loader: "jsx",
           // tell the relative paths where are you relative to
           resolveDir: new URL(".", result.url).pathname,
         };
+        await set(args.path, toBeCached);
+        return toBeCached;
       });
     },
   };
