@@ -1,6 +1,14 @@
-import { ChangeEvent, useRef, useState } from "react";
+import Editor, { OnMount } from "@monaco-editor/react";
+import { editor } from "monaco-editor";
+import { Fragment, useRef } from "react";
 import { getEsbuild } from "../lib/esbuildInit";
 import { unpkgFilePlugin } from "../lib/unpkgFilePlugin";
+
+export type CellType = "code" | "markdown";
+
+export interface CellProps {
+  type: CellType;
+}
 
 const IFRMAE_HTML = `
   <html>
@@ -45,16 +53,17 @@ const IFRMAE_HTML = `
   </html>
   `;
 
-const Cell = () => {
-  const [code, setCode] = useState("");
+const Cell: React.FC<CellProps> = ({ type }) => {
   const iframe = useRef<HTMLIFrameElement>();
+  const monaco = useRef<editor.IStandaloneCodeEditor>(null);
 
-  function onTextareaChange(event: ChangeEvent<HTMLTextAreaElement>) {
-    setCode(event.target.value);
-  }
+  const handleEditorOnMount: OnMount = (editor) => {
+    monaco.current = editor;
+  };
 
   async function onRunButtonClick() {
-    if (!iframe.current) {
+    const code = monaco.current?.getValue();
+    if (!iframe.current || !code) {
       return false;
     }
     iframe.current.srcdoc = IFRMAE_HTML;
@@ -96,9 +105,26 @@ const Cell = () => {
 
   return (
     <div>
-      <textarea onChange={onTextareaChange} value={code}></textarea>
-      <button onClick={onRunButtonClick}>Run!</button>
-      <iframe ref={iframe} sandbox="allow-scripts"></iframe>
+      <Editor
+        defaultLanguage={type === "code" ? "javascript" : "markdown"}
+        onMount={handleEditorOnMount}
+        height="400px"
+        options={{
+          minimap: {
+            enabled: false,
+          },
+          overviewRulerBorder: false,
+          bracketPairColorization: {
+            enabled: true,
+          },
+        }}
+      />
+      {type === "code" && (
+        <Fragment>
+          <button onClick={onRunButtonClick}>Run!</button>
+          <iframe ref={iframe} sandbox="allow-scripts"></iframe>
+        </Fragment>
+      )}
     </div>
   );
 };

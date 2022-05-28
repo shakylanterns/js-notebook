@@ -21,8 +21,10 @@ const config: ForgeConfig = {
       name: "@electron-forge/plugin-webpack",
       config: {
         mainConfig,
+        // devContentSecurityPolicy:
+        //   "default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline' data: https://cdn.jsdelivr.net/; style-src https://cdn.jsdelivr.net/ 'unsafe-inline'; worker-src blob:; connect-src *; font-src https://cdn.jsdelivr.net/",
         devContentSecurityPolicy:
-          "default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline' data:; worker-src blob:; connect-src *",
+          "default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline' data:; worker-src blob: 'self'; connect-src *;",
         renderer: {
           config: rendererConfig,
           entryPoints: [

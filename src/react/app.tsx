@@ -9,7 +9,7 @@ const App = () => {
 
   return (
     <div>
-      <Cell />
+      <Cell type="markdown" />
     </div>
   );
 };
