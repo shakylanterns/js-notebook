@@ -1,6 +1,7 @@
+import { Box, Button } from "@chakra-ui/react";
 import Editor, { OnMount } from "@monaco-editor/react";
 import { editor } from "monaco-editor";
-import { Fragment, useRef } from "react";
+import { Fragment, useRef, useState } from "react";
 import { getEsbuild } from "../lib/esbuildInit";
 import { unpkgFilePlugin } from "../lib/unpkgFilePlugin";
 
@@ -53,12 +54,50 @@ const IFRMAE_HTML = `
   </html>
   `;
 
+const monacoEditorOptions =
+  (): editor.IStandaloneDiffEditorConstructionOptions => {
+    return {
+      theme: "github-light",
+      minimap: {
+        enabled: false,
+      },
+      overviewRulerBorder: false,
+      bracketPairColorization: {
+        enabled: true,
+      },
+      padding: {
+        bottom: 0,
+        top: 0,
+      },
+      lineNumbers: "off",
+      glyphMargin: false,
+      wordWrap: "on",
+      overviewRulerLanes: 0,
+      scrollbar: {
+        vertical: "hidden",
+      },
+      lineDecorationsWidth: 0,
+      scrollBeyondLastLine: false,
+    };
+  };
+
 const Cell: React.FC<CellProps> = ({ type }) => {
   const iframe = useRef<HTMLIFrameElement>();
   const monaco = useRef<editor.IStandaloneCodeEditor>(null);
+  const [editorHeight, setEditorHeight] = useState("50px");
 
   const handleEditorOnMount: OnMount = (editor) => {
     monaco.current = editor;
+    monaco.current.getModel()?.updateOptions({
+      tabSize: 2,
+      indentSize: 2,
+      insertSpaces: true,
+      trimAutoWhitespace: true,
+    });
+    editor.onDidContentSizeChange(() => {
+      const contentHeight = Math.min(monaco.current.getContentHeight(), 800);
+      setEditorHeight(contentHeight + "px");
+    });
   };
 
   async function onRunButtonClick() {
@@ -104,28 +143,27 @@ const Cell: React.FC<CellProps> = ({ type }) => {
   }
 
   return (
-    <div>
-      <Editor
-        defaultLanguage={type === "code" ? "javascript" : "markdown"}
-        onMount={handleEditorOnMount}
-        height="400px"
-        options={{
-          minimap: {
-            enabled: false,
-          },
-          overviewRulerBorder: false,
-          bracketPairColorization: {
-            enabled: true,
-          },
-        }}
-      />
+    <Box borderLeftWidth={12} borderLeftColor="blue.600" paddingLeft={8}>
+      {/* The monaco editor has some strange margin at the left */}
+      <Box display="block" marginLeft={-4}>
+        <Editor
+          defaultLanguage={type === "code" ? "javascript" : "markdown"}
+          height={editorHeight}
+          onMount={handleEditorOnMount}
+          options={monacoEditorOptions()}
+        />
+      </Box>
       {type === "code" && (
         <Fragment>
-          <button onClick={onRunButtonClick}>Run!</button>
-          <iframe ref={iframe} sandbox="allow-scripts"></iframe>
+          <Button onClick={onRunButtonClick} marginTop={4} size="sm">
+            Run!
+          </Button>
+          <Box borderWidth={0.5} borderColor="gray.400">
+            <iframe ref={iframe} sandbox="allow-scripts"></iframe>
+          </Box>
         </Fragment>
       )}
-    </div>
+    </Box>
   );
 };
 
