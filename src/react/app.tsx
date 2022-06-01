@@ -5,7 +5,8 @@ import { useEffect } from "react";
 import { initEsbuild } from "../lib/esbuildInit";
 import Editor from "./Editor";
 import "./patch.css";
-import Sidebar from "./Sidebar";
+import Sidebar from "./sidebar/Sidebar";
+import { theme } from "./theme";
 
 const App = () => {
   const monaco = useMonaco();
@@ -18,7 +19,7 @@ const App = () => {
   }, []);
 
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <Flex>
         <Sidebar />
         <Editor />

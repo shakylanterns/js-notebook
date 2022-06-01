@@ -1,4 +1,4 @@
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, ButtonGroup } from "@chakra-ui/react";
 import Editor, { OnMount } from "@monaco-editor/react";
 import { editor } from "monaco-editor";
 import { Fragment, useRef, useState } from "react";
@@ -84,7 +84,9 @@ const monacoEditorOptions =
 const Cell: React.FC<CellProps> = ({ type }) => {
   const iframe = useRef<HTMLIFrameElement>();
   const monaco = useRef<editor.IStandaloneCodeEditor>(null);
-  const [editorHeight, setEditorHeight] = useState("50px");
+  // about two lines in height
+  const [editorHeight, setEditorHeight] = useState("70px");
+  const [isRunning, setIsRunning] = useState(false);
 
   const handleEditorOnMount: OnMount = (editor) => {
     monaco.current = editor;
@@ -101,6 +103,7 @@ const Cell: React.FC<CellProps> = ({ type }) => {
   };
 
   async function onRunButtonClick() {
+    setIsRunning(true);
     const code = monaco.current?.getValue();
     if (!iframe.current || !code) {
       return false;
@@ -142,8 +145,12 @@ const Cell: React.FC<CellProps> = ({ type }) => {
     }
   }
 
+  function onStopButtonClick() {
+    setIsRunning(false);
+  }
+
   return (
-    <Box borderLeftWidth={12} borderLeftColor="blue.600" paddingLeft={8}>
+    <Box borderLeftWidth={12} borderLeftColor="primary.600" paddingLeft={8}>
       {/* The monaco editor has some strange margin at the left */}
       <Box display="block" marginLeft={-4}>
         <Editor
@@ -155,10 +162,30 @@ const Cell: React.FC<CellProps> = ({ type }) => {
       </Box>
       {type === "code" && (
         <Fragment>
-          <Button onClick={onRunButtonClick} marginTop={4} size="sm">
-            Run!
-          </Button>
-          <Box borderWidth={0.5} borderColor="gray.400">
+          <ButtonGroup>
+            <Button
+              onClick={onRunButtonClick}
+              marginTop={4}
+              size="sm"
+              disabled={isRunning}
+            >
+              Run!
+            </Button>
+            <Button
+              onClick={onStopButtonClick}
+              marginTop={4}
+              size="sm"
+              disabled={!isRunning}
+            >
+              Stop
+            </Button>
+          </ButtonGroup>
+          <Box
+            borderWidth={0.5}
+            borderColor="gray.400"
+            display={isRunning ? "block" : "none"}
+            marginTop={4}
+          >
             <iframe ref={iframe} sandbox="allow-scripts"></iframe>
           </Box>
         </Fragment>
