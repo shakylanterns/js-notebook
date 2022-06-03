@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/react";
-import Cell from "./Cell";
+import Cell from "./cell/Cell";
 
 const Editor = () => {
   return (
@@ -11,6 +11,7 @@ const Editor = () => {
       minHeight="100vh"
     >
       <Cell type="code" />
+      <Cell type="markdown" />
     </Box>
   );
 };

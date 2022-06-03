@@ -1,15 +1,10 @@
 import { Box, Button, ButtonGroup } from "@chakra-ui/react";
 import Editor, { OnMount } from "@monaco-editor/react";
 import { editor } from "monaco-editor";
-import { Fragment, useRef, useState } from "react";
-import { getEsbuild } from "../lib/esbuildInit";
-import { unpkgFilePlugin } from "../lib/unpkgFilePlugin";
-
-export type CellType = "code" | "markdown";
-
-export interface CellProps {
-  type: CellType;
-}
+import { useRef, useState } from "react";
+import { getEsbuild } from "../../lib/esbuildInit";
+import { unpkgFilePlugin } from "../../lib/unpkgFilePlugin";
+import { monacoEditorOptions } from "./editorUtils";
 
 const IFRMAE_HTML = `
   <html>
@@ -54,57 +49,41 @@ const IFRMAE_HTML = `
   </html>
   `;
 
-const monacoEditorOptions =
-  (): editor.IStandaloneDiffEditorConstructionOptions => {
-    return {
-      theme: "github-light",
-      minimap: {
-        enabled: false,
-      },
-      overviewRulerBorder: false,
-      bracketPairColorization: {
-        enabled: true,
-      },
-      padding: {
-        bottom: 0,
-        top: 0,
-      },
-      lineNumbers: "off",
-      glyphMargin: false,
-      wordWrap: "on",
-      overviewRulerLanes: 0,
-      scrollbar: {
-        vertical: "hidden",
-      },
-      lineDecorationsWidth: 0,
-      scrollBeyondLastLine: false,
-    };
-  };
-
-const Cell: React.FC<CellProps> = ({ type }) => {
+const CodeCell = () => {
+  const [text, setText] = useState("");
   const iframe = useRef<HTMLIFrameElement>();
-  const monaco = useRef<editor.IStandaloneCodeEditor>(null);
+  const monacoRef = useRef<editor.IStandaloneCodeEditor>(null);
+  // this state is only useful in code mode
+  const [isRunning, setIsRunning] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   // about two lines in height
   const [editorHeight, setEditorHeight] = useState("70px");
-  const [isRunning, setIsRunning] = useState(false);
 
-  const handleEditorOnMount: OnMount = (editor) => {
-    monaco.current = editor;
-    monaco.current.getModel()?.updateOptions({
+  const onBlur = () => {
+    if (!isTyping) {
+      return false;
+    }
+    setText(monacoRef.current.getValue());
+    setIsTyping(false);
+  };
+
+  const handleEditorOnMount: OnMount = (editorInstance) => {
+    monacoRef.current = editorInstance;
+    monacoRef.current.getModel()?.updateOptions({
       tabSize: 2,
       indentSize: 2,
       insertSpaces: true,
       trimAutoWhitespace: true,
     });
-    editor.onDidContentSizeChange(() => {
-      const contentHeight = Math.min(monaco.current.getContentHeight(), 800);
+    editorInstance.onDidContentSizeChange(() => {
+      const contentHeight = Math.min(monacoRef.current.getContentHeight(), 800);
       setEditorHeight(contentHeight + "px");
     });
   };
 
   async function onRunButtonClick() {
     setIsRunning(true);
-    const code = monaco.current?.getValue();
+    const code = monacoRef.current?.getValue();
     if (!iframe.current || !code) {
       return false;
     }
@@ -150,48 +129,43 @@ const Cell: React.FC<CellProps> = ({ type }) => {
   }
 
   return (
-    <Box borderLeftWidth={12} borderLeftColor="primary.600" paddingLeft={8}>
-      {/* The monaco editor has some strange margin at the left */}
+    <Box onFocus={() => setIsTyping(true)} onBlur={onBlur}>
       <Box display="block" marginLeft={-4}>
         <Editor
-          defaultLanguage={type === "code" ? "javascript" : "markdown"}
+          defaultLanguage={"javascript"}
           height={editorHeight}
           onMount={handleEditorOnMount}
           options={monacoEditorOptions()}
         />
       </Box>
-      {type === "code" && (
-        <Fragment>
-          <ButtonGroup>
-            <Button
-              onClick={onRunButtonClick}
-              marginTop={4}
-              size="sm"
-              disabled={isRunning}
-            >
-              Run!
-            </Button>
-            <Button
-              onClick={onStopButtonClick}
-              marginTop={4}
-              size="sm"
-              disabled={!isRunning}
-            >
-              Stop
-            </Button>
-          </ButtonGroup>
-          <Box
-            borderWidth={0.5}
-            borderColor="gray.400"
-            display={isRunning ? "block" : "none"}
-            marginTop={4}
-          >
-            <iframe ref={iframe} sandbox="allow-scripts"></iframe>
-          </Box>
-        </Fragment>
-      )}
+      <ButtonGroup>
+        <Button
+          onClick={onRunButtonClick}
+          marginTop={4}
+          size="sm"
+          disabled={isRunning}
+        >
+          Run!
+        </Button>
+        <Button
+          onClick={onStopButtonClick}
+          marginTop={4}
+          size="sm"
+          disabled={!isRunning}
+        >
+          Stop
+        </Button>
+      </ButtonGroup>
+      <Box
+        borderWidth={0.5}
+        borderColor="gray.400"
+        display={isRunning ? "block" : "none"}
+        marginTop={4}
+      >
+        <iframe ref={iframe} sandbox="allow-scripts"></iframe>
+      </Box>
     </Box>
   );
 };
 
-export default Cell;
+export default CodeCell;
