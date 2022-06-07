@@ -31,6 +31,7 @@
     "@vercel/webpack-asset-relocator-loader": "^1.7.3",
     "css-loader": "^6.7.3",
     "electron": "22.0.0",
+    "electron-devtools-installer": "^3.2.0",
     "eslint": "^8.30.0",
     "eslint-plugin-import": "^2.26.0",
     "fork-ts-checker-webpack-plugin": "^7.2.14",
@@ -45,6 +46,7 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@monaco-editor/react": "^4.4.6",
+    "@reduxjs/toolkit": "^1.9.1",
     "electron-squirrel-startup": "^1.0.0",
     "esbuild-wasm": "^0.16.10",
     "framer-motion": "^8.0.2",
@@ -57,6 +59,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.7.1",
     "react-markdown": "^8.0.4",
+    "react-redux": "^8.0.5",
     "rehype-katex": "^6.0.2",
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1"

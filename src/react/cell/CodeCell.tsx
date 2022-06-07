@@ -4,6 +4,8 @@ import { editor } from "monaco-editor";
 import { useRef, useState } from "react";
 import { getEsbuild } from "../../lib/esbuildInit";
 import { unpkgFilePlugin } from "../../lib/unpkgFilePlugin";
+import { useAppDispatch } from "../../redux/hooks";
+import { updateCell } from "../../redux/reducers/cells";
 import { monacoEditorOptions } from "./editorUtils";
 
 const IFRMAE_HTML = `
@@ -49,8 +51,12 @@ const IFRMAE_HTML = `
   </html>
   `;
 
-const CodeCell = () => {
-  const [text, setText] = useState("");
+interface Props {
+  text: string;
+  index: number;
+}
+
+const CodeCell: React.FC<Props> = ({ text, index }) => {
   const iframe = useRef<HTMLIFrameElement>();
   const monacoRef = useRef<editor.IStandaloneCodeEditor>(null);
   // this state is only useful in code mode
@@ -58,17 +64,25 @@ const CodeCell = () => {
   const [isTyping, setIsTyping] = useState(false);
   // about two lines in height
   const [editorHeight, setEditorHeight] = useState("70px");
+  const dispatch = useAppDispatch();
 
   const onBlur = () => {
     if (!isTyping) {
       return false;
     }
-    setText(monacoRef.current.getValue());
     setIsTyping(false);
+    dispatch(
+      updateCell({
+        index,
+        text: monacoRef.current.getValue(),
+        type: "code",
+      })
+    );
   };
 
   const handleEditorOnMount: OnMount = (editorInstance) => {
     monacoRef.current = editorInstance;
+    monacoRef.current.setValue(text);
     monacoRef.current.getModel()?.updateOptions({
       tabSize: 2,
       indentSize: 2,

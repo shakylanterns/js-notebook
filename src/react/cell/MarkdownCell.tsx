@@ -7,15 +7,22 @@ import ReactMarkdown from "react-markdown";
 import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
+import { useAppDispatch } from "../../redux/hooks";
+import { updateCell } from "../../redux/reducers/cells";
 import { components } from "../markdown/componentMappings";
 import { monacoEditorOptions } from "./editorUtils";
 
-const MarkdownCell = () => {
-  const [text, setText] = useState("");
+interface Props {
+  text: string;
+  index: number;
+}
+
+const MarkdownCell: React.FC<Props> = ({ text, index }) => {
   const [isTyping, setIsTyping] = useState(false);
   const monacoRef = useRef<editor.IStandaloneCodeEditor>(null);
   // about two lines in height
   const [editorHeight, setEditorHeight] = useState("70px");
+  const dispatch = useAppDispatch();
 
   const onDoubleClick = () => {
     setIsTyping(true);
@@ -25,12 +32,19 @@ const MarkdownCell = () => {
     if (!isTyping) {
       return false;
     }
-    setText(monacoRef.current.getValue());
+    dispatch(
+      updateCell({
+        index,
+        text: monacoRef.current.getValue(),
+        type: "markdown",
+      })
+    );
     setIsTyping(false);
   };
 
   const handleEditorOnMount: OnMount = (editorInstance) => {
     monacoRef.current = editorInstance;
+    monacoRef.current.setValue(text);
     monacoRef.current.getModel()?.updateOptions({
       tabSize: 2,
       indentSize: 2,
