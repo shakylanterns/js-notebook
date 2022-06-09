@@ -12,7 +12,6 @@ const CellContainer = ({ children }: Props) => {
       borderLeftColor="transparent"
       _hover={{ borderLeftColor: "primary.600" }}
       paddingLeft={8}
-      marginBottom={12}
     >
       {children}
     </Box>

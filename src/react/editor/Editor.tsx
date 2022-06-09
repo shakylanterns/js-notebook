@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { useAppSelector } from "../../redux/hooks";
 import { selectCells } from "../../redux/reducers/cells";
 import Cell from "../cell/Cell";
@@ -6,6 +6,19 @@ import AddCell from "./AddCell";
 
 const Editor = () => {
   const cells = useAppSelector(selectCells);
+
+  const editorElements = cells.length ? (
+    <Flex gap={4} flexDir="column">
+      {cells.map((cell, index) => (
+        <Flex gap={2} flexDir="column" key={`cell-${index}`}>
+          <Cell cell={cell} index={index} />
+          <AddCell lastIndex={cells.length} index={index + 1} />
+        </Flex>
+      ))}
+    </Flex>
+  ) : (
+    <AddCell lastIndex={cells.length} index={cells.length} />
+  );
 
   return (
     <Box
@@ -15,10 +28,7 @@ const Editor = () => {
       maxWidth="90vw"
       minHeight="100vh"
     >
-      {cells.map((cell, index) => (
-        <Cell cell={cell} key={`cell-${index}`} index={index} />
-      ))}
-      <AddCell lastIndex={cells.length} />
+      {editorElements}
     </Box>
   );
 };
