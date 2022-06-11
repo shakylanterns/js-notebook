@@ -18,7 +18,7 @@ const Cell: React.FC<CellProps> = ({ cell, index }) => {
     cellComponent = <MarkdownCell text={text} index={index} />;
   }
 
-  return <CellContainer>{cellComponent}</CellContainer>;
+  return <CellContainer index={index}>{cellComponent}</CellContainer>;
 };
 
 export default Cell;

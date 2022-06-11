@@ -22,6 +22,26 @@ const initialState: CellSlice = {
 const cellSlice = createSlice({
   name: "cells",
   reducers: {
+    shiftCellBefore(state, action: PayloadAction<number>) {
+      // remove that element
+      const collected = state.cells.splice(action.payload, 1);
+      // something went wrong if there is nothing
+      if (collected.length !== 1) {
+        return;
+      }
+      // add before the previous element
+      state.cells.splice(action.payload - 1, 0, collected[0]);
+    },
+    shiftCellAfter(state, action: PayloadAction<number>) {
+      // remove that element
+      const collected = state.cells.splice(action.payload, 1);
+      // something went wrong if there is nothing
+      if (collected.length !== 1) {
+        return;
+      }
+      // add before the previous element
+      state.cells.splice(action.payload + 1, 0, collected[0]);
+    },
     addCell(state, action: PayloadAction<CellTypeWithIndex>) {
       const { index, type } = action.payload;
       if (index < 0 || index > state.cells.length) {
@@ -55,8 +75,15 @@ const cellSlice = createSlice({
   initialState,
 });
 
-export const { addCell, updateCell, deleteCell } = cellSlice.actions;
+export const {
+  addCell,
+  updateCell,
+  deleteCell,
+  shiftCellAfter,
+  shiftCellBefore,
+} = cellSlice.actions;
 
 export const selectCells = (state: RootState) => state.cells.cells;
+export const selectCellsLen = (state: RootState) => state.cells.cells.length;
 
 export default cellSlice.reducer;
