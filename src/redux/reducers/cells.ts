@@ -10,6 +10,7 @@ export interface CellContent {
 
 export interface CellSlice {
   cells: CellContent[];
+  title: string;
 }
 
 export type CellContentWithIndex = CellContent & { index: number };
@@ -17,6 +18,7 @@ export type CellTypeWithIndex = { type: CellType; index: number };
 
 const initialState: CellSlice = {
   cells: [],
+  title: "",
 };
 
 const cellSlice = createSlice({
@@ -71,6 +73,9 @@ const cellSlice = createSlice({
       // replace that position with nothing
       state.cells.splice(action.payload, 1);
     },
+    setTitle(state, action: PayloadAction<string>) {
+      state.title = action.payload;
+    },
   },
   initialState,
 });
@@ -81,9 +86,11 @@ export const {
   deleteCell,
   shiftCellAfter,
   shiftCellBefore,
+  setTitle,
 } = cellSlice.actions;
 
 export const selectCells = (state: RootState) => state.cells.cells;
 export const selectCellsLen = (state: RootState) => state.cells.cells.length;
+export const selectTitle = (state: RootState) => state.cells.title;
 
 export default cellSlice.reducer;

@@ -3,6 +3,7 @@ import { useAppSelector } from "../../redux/hooks";
 import { selectCells } from "../../redux/reducers/cells";
 import Cell from "../cell/Cell";
 import AddCell from "./AddCell";
+import DocumentTitle from "./DocumentTitle";
 
 const Editor = () => {
   const cells = useAppSelector(selectCells);
@@ -28,6 +29,7 @@ const Editor = () => {
       maxWidth="90vw"
       minHeight="100vh"
     >
+      <DocumentTitle />
       {editorElements}
     </Box>
   );
