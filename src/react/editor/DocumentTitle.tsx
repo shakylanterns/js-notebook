@@ -20,6 +20,7 @@ const DocumentTitle = () => {
         variant="flushed"
         placeholder="Title..."
         fontSize={"3xl"}
+        value={title}
         marginBottom={12}
         onBlur={onInputBlur}
       />

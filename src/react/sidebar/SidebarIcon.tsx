@@ -1,13 +1,15 @@
 import { Flex, Text } from "@chakra-ui/react";
+import { MouseEventHandler } from "react";
 import { IconType } from "react-icons";
 
 type Props = {
   icon: IconType;
   text: string;
   active?: boolean;
+  onClick?: MouseEventHandler;
 };
 
-const SidebarIcon = ({ icon: Icon, text, active }: Props) => {
+const SidebarIcon = ({ icon: Icon, text, active, onClick }: Props) => {
   return (
     <Flex
       flexDir="column"
@@ -17,6 +19,7 @@ const SidebarIcon = ({ icon: Icon, text, active }: Props) => {
       cursor="pointer"
       width="100%"
       paddingX={3}
+      onClick={onClick}
     >
       <Icon size={20} />
       <Text marginTop={1} fontSize="sm">
