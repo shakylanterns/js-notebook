@@ -19,25 +19,33 @@ export interface CellSlice {
 export type CellContentWithIndex = CellContent & { index: number };
 export type CellTypeWithIndex = { type: CellType; index: number };
 
+export interface SaveFileOptions {
+  content: string;
+  ignoreCurrentFilePath?: boolean;
+}
+
 export const saveFile = createAsyncThunk.withTypes<{
   state: RootState;
 }>()(
   "cells/saveFile",
-  async (contents: string, { rejectWithValue, getState }) => {
+  async (
+    { content, ignoreCurrentFilePath }: SaveFileOptions,
+    { rejectWithValue, getState }
+  ) => {
     let cellFilePath = getState().cells.filePath;
-    if (!cellFilePath) {
+    if (ignoreCurrentFilePath || !cellFilePath) {
       const { canceled, filePath } = await window.electron.getSaveFilePath();
       if (canceled) {
-        return;
+        return rejectWithValue("");
       }
       cellFilePath =
         !filePath.endsWith(".jsnote") && !filePath.endsWith(".jsnote.json")
           ? filePath + ".jsnote"
           : filePath;
     }
-    const error = await window.electron.saveFile(cellFilePath, contents);
+    const error = await window.electron.saveFile(cellFilePath, content);
     if (error) {
-      rejectWithValue(error);
+      return rejectWithValue(error);
     }
     return cellFilePath;
   }
@@ -48,11 +56,11 @@ export const openFile = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const { canceled, filePaths } = await window.electron.loadFilePath();
     if (canceled) {
-      return;
+      return rejectWithValue("");
     }
     const { error, content } = await window.electron.loadFile(filePaths[0]);
     if (error) {
-      rejectWithValue(error);
+      return rejectWithValue(error);
     }
     return {
       filePath: filePaths[0],
@@ -194,6 +202,7 @@ export const selectCells = (state: RootState) => state.cells.cells;
 export const selectCellsLen = (state: RootState) => state.cells.cells.length;
 export const selectTitle = (state: RootState) => state.cells.title;
 export const selectFilePath = (state: RootState) => state.cells.filePath;
+export const selectIsFileTouched = (state: RootState) => state.cells.touched;
 export const selectFileError = (state: RootState) => state.cells.fileError;
 
 export default cellSlice.reducer;

@@ -16,11 +16,12 @@ const DocumentTitle = () => {
   if (isEditing) {
     return (
       <Input
+        marginLeft={8}
         size={"lg"}
         variant="flushed"
         placeholder="Title..."
         fontSize={"3xl"}
-        value={title}
+        defaultValue={title}
         marginBottom={12}
         onBlur={onInputBlur}
       />
@@ -29,7 +30,13 @@ const DocumentTitle = () => {
 
   if (title) {
     return (
-      <Heading marginBottom={12} onDoubleClick={() => setIsEditing(true)}>
+      <Heading
+        borderLeftWidth={12}
+        borderLeftColor="transparent"
+        paddingLeft={8}
+        marginBottom={12}
+        onDoubleClick={() => setIsEditing(true)}
+      >
         {title}
       </Heading>
     );
@@ -37,6 +44,9 @@ const DocumentTitle = () => {
 
   return (
     <Heading
+      borderLeftWidth={12}
+      borderLeftColor="transparent"
+      paddingLeft={8}
       fontStyle={"italic"}
       color="gray.200"
       marginBottom={12}

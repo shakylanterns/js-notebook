@@ -1,6 +1,10 @@
-import { dialog, ipcMain } from "electron";
+import { app, dialog, ipcMain } from "electron";
 import { readFile, writeFile } from "fs/promises";
 import { IPCEvents } from "./ipcTypes";
+
+// evil global variable :(
+export let isQuitting = false;
+
 export const registerIPCEvents = () => {
   ipcMain.handle(IPCEvents.ShowSaveDialog, () => {
     return dialog.showSaveDialog({
@@ -54,5 +58,10 @@ export const registerIPCEvents = () => {
         content: "",
       };
     }
+  });
+
+  ipcMain.handle(IPCEvents.Quit, () => {
+    isQuitting = true;
+    app.quit();
   });
 };

@@ -12,6 +12,8 @@ declare global {
       loadFile: (
         filePath: string
       ) => Promise<{ content: string; error: string }>;
+      listenToWindowClose: (callback: () => void) => void;
+      quitProgram: () => void;
     };
   }
 }

@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import { initEsbuild } from "../lib/esbuildInit";
 import { store } from "../redux/store";
 import Editor from "./editor/Editor";
+import SaveBeforeQuitModal from "./modals/SaveBeforeQuitModal";
 import "./patch.css";
 import Sidebar from "./sidebar/Sidebar";
 import { theme } from "./theme";
@@ -27,6 +28,7 @@ const App = () => {
           <Sidebar />
           <Editor />
         </Flex>
+        <SaveBeforeQuitModal />
       </ChakraProvider>
     </Provider>
   );
