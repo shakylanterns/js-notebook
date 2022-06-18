@@ -1,9 +1,12 @@
 import { app, dialog, ipcMain } from "electron";
 import { readFile, writeFile } from "fs/promises";
-import { IPCEvents } from "./ipcTypes";
+import { ApplicationState, IPCEvents } from "./ipcTypes";
+import { Store } from "./Store";
 
 // evil global variable :(
 export let isQuitting = false;
+
+const stateStore = new Store<ApplicationState>("state");
 
 export const registerIPCEvents = () => {
   ipcMain.handle(IPCEvents.ShowSaveDialog, () => {
@@ -60,8 +63,18 @@ export const registerIPCEvents = () => {
     }
   });
 
-  ipcMain.handle(IPCEvents.Quit, () => {
+  ipcMain.handle(IPCEvents.Quit, async (_, state: ApplicationState) => {
+    await stateStore.save(state);
     isQuitting = true;
     app.quit();
+  });
+
+  ipcMain.handle(IPCEvents.GetApplicationState, async () => {
+    try {
+      const state = await stateStore.open();
+      return state;
+    } catch (err) {
+      return null;
+    }
   });
 };

@@ -51,19 +51,27 @@ export const saveFile = createAsyncThunk.withTypes<{
   }
 );
 
+export interface OpenFileOptions {
+  filePath?: string;
+}
+
 export const openFile = createAsyncThunk(
   "cells/openFile",
-  async (_, { rejectWithValue }) => {
-    const { canceled, filePaths } = await window.electron.loadFilePath();
-    if (canceled) {
-      return rejectWithValue("");
+  async ({ filePath }: OpenFileOptions, { rejectWithValue }) => {
+    let _filePath = filePath;
+    if (!filePath) {
+      const { canceled, filePaths } = await window.electron.loadFilePath();
+      if (canceled) {
+        return rejectWithValue("");
+      }
+      _filePath = filePaths[0];
     }
-    const { error, content } = await window.electron.loadFile(filePaths[0]);
+    const { error, content } = await window.electron.loadFile(_filePath);
     if (error) {
       return rejectWithValue(error);
     }
     return {
-      filePath: filePaths[0],
+      filePath: _filePath,
       content,
     };
   }

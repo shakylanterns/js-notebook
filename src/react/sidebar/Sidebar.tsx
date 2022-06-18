@@ -2,9 +2,7 @@ import { useDisclosure, VStack } from "@chakra-ui/react";
 import { Fragment } from "react";
 import { FaCog, FaFile, FaHome, FaRegSave, FaSave } from "react-icons/fa";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import {
-  openFile, selectIsFileTouched
-} from "../../redux/reducers/cells";
+import { openFile, selectIsFileTouched } from "../../redux/reducers/cells";
 import { useSaveFile } from "../hooks/useSaveFile";
 import UnsavedFileModal from "../modals/UnsavedFileModal";
 import SidebarIcon from "./SidebarIcon";
@@ -35,7 +33,7 @@ const Sidebar = () => {
   };
 
   const startOpenFile = () => {
-    dispatch(openFile());
+    dispatch(openFile({}));
   };
 
   return (

@@ -41,6 +41,7 @@ const AddCell = ({ lastIndex, index }: Props) => {
       transitionDuration={"0.2s"}
       transitionProperty="opacity"
       transitionTimingFunction={"ease-in"}
+      marginBottom={24}
     >
       <Button onClick={onAddSnippetBtnClick} leftIcon={<FaCode />}>
         Add Snippet

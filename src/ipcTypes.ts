@@ -4,7 +4,8 @@ export type EventTypes =
   | "load-file-dialog"
   | "load-file"
   | "save-before-quit"
-  | "quit";
+  | "quit"
+  | "get-application-state";
 
 export const IPCEvents = {
   ShowSaveDialog: "show-save-dialog",
@@ -13,4 +14,10 @@ export const IPCEvents = {
   LoadFile: "load-file",
   SaveBeforeQuit: "save-before-quit",
   Quit: "quit",
+  GetApplicationState: "get-application-state",
 };
+
+export interface ApplicationState {
+  openedFilePath: string;
+  scrollPosition: number;
+}

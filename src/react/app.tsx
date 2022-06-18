@@ -8,6 +8,7 @@ import { store } from "../redux/store";
 import Editor from "./editor/Editor";
 import SaveBeforeQuitModal from "./modals/SaveBeforeQuitModal";
 import "./patch.css";
+import SavedStateInitializer from "./SavedStateInitializer";
 import Sidebar from "./sidebar/Sidebar";
 import { theme } from "./theme";
 
@@ -29,6 +30,7 @@ const App = () => {
           <Editor />
         </Flex>
         <SaveBeforeQuitModal />
+        <SavedStateInitializer />
       </ChakraProvider>
     </Provider>
   );

@@ -11,27 +11,42 @@ import {
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useAppSelector } from "../../redux/hooks";
-import { selectIsFileTouched } from "../../redux/reducers/cells";
+import {
+  selectFilePath,
+  selectIsFileTouched,
+} from "../../redux/reducers/cells";
 import { useSaveFile } from "../hooks/useSaveFile";
 
 const SaveBeforeQuitModal = () => {
   const touched = useAppSelector(selectIsFileTouched);
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { serializeAndSave } = useSaveFile();
+  const filePath = useAppSelector(selectFilePath);
 
   function onQuitBtnClick() {
-    window.electron.quitProgram();
+    window.electron.quitProgram({
+      openedFilePath: filePath,
+      scrollPosition: window.scrollY,
+    });
   }
 
   async function onSaveBtnClick() {
     await serializeAndSave(false);
-    window.electron.quitProgram();
+    setTimeout(() => {
+      window.electron.quitProgram({
+        openedFilePath: filePath,
+        scrollPosition: window.scrollY,
+      });
+    }, 1000);
   }
 
   useEffect(() => {
     window.electron.listenToWindowClose(() => {
       if (!touched) {
-        window.electron.quitProgram();
+        window.electron.quitProgram({
+          openedFilePath: filePath,
+          scrollPosition: window.scrollY,
+        });
       } else {
         onOpen();
       }

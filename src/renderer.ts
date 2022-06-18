@@ -2,6 +2,7 @@ import { render } from "./react";
 
 import { loader } from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
+import { ApplicationState } from "./ipcTypes";
 
 declare global {
   interface Window {
@@ -13,7 +14,8 @@ declare global {
         filePath: string
       ) => Promise<{ content: string; error: string }>;
       listenToWindowClose: (callback: () => void) => void;
-      quitProgram: () => void;
+      quitProgram: (state: ApplicationState) => void;
+      reloadApplicationState: () => Promise<ApplicationState | null>;
     };
   }
 }
