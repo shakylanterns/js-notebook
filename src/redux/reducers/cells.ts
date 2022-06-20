@@ -36,7 +36,7 @@ export const saveFile = createAsyncThunk.withTypes<{
     if (ignoreCurrentFilePath || !cellFilePath) {
       const { canceled, filePath } = await window.electron.getSaveFilePath();
       if (canceled) {
-        return rejectWithValue("");
+        return rejectWithValue("cancelled");
       }
       cellFilePath =
         !filePath.endsWith(".jsnote") && !filePath.endsWith(".jsnote.json")
@@ -62,7 +62,7 @@ export const openFile = createAsyncThunk(
     if (!filePath) {
       const { canceled, filePaths } = await window.electron.loadFilePath();
       if (canceled) {
-        return rejectWithValue("");
+        return rejectWithValue("cancelled");
       }
       _filePath = filePaths[0];
     }
@@ -155,6 +155,7 @@ const cellSlice = createSlice({
     builder.addCase(saveFile.fulfilled, (state, { payload }) => {
       state.filePath = payload;
       state.touched = false;
+      state.fileError = "";
     });
 
     builder.addCase(saveFile.rejected, (state, action) => {
@@ -185,6 +186,7 @@ const cellSlice = createSlice({
         state.cells = items.cells;
         state.title = items.title;
         state.touched = false;
+        state.fileError = "";
       } catch (err) {
         state.fileError = err.message;
       }

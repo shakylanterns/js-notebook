@@ -7,6 +7,7 @@ import { initEsbuild } from "../lib/esbuildInit";
 import { store } from "../redux/store";
 import Editor from "./editor/Editor";
 import SaveBeforeQuitModal from "./modals/SaveBeforeQuitModal";
+import NotificationProvier from "./NotificationContext";
 import "./patch.css";
 import SavedStateInitializer from "./SavedStateInitializer";
 import Sidebar from "./sidebar/Sidebar";
@@ -25,12 +26,14 @@ const App = () => {
   return (
     <Provider store={store}>
       <ChakraProvider theme={theme}>
-        <Flex>
-          <Sidebar />
-          <Editor />
-        </Flex>
-        <SaveBeforeQuitModal />
+        <NotificationProvier>
+          <Flex>
+            <Sidebar />
+            <Editor />
+          </Flex>
+        </NotificationProvier>
         <SavedStateInitializer />
+        <SaveBeforeQuitModal />
       </ChakraProvider>
     </Provider>
   );
