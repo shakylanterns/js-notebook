@@ -2,11 +2,16 @@ import { useDisclosure } from "@chakra-ui/react";
 import { FaFile } from "react-icons/fa";
 import { useAppSelector } from "../../redux/hooks";
 import { selectIsFileTouched } from "../../redux/reducers/cells";
+import { useTryOpenFile } from "../hooks/useTryOpenFile";
 import SidebarIcon from "./SidebarIcon";
-import { useTryOpenFile } from "./useTryOpenFile";
 
-const Open = () => {
-  const disclosure = useDisclosure();
+type Props = {
+  disclosure: ReturnType<typeof useDisclosure>;
+};
+
+const Open = ({ disclosure }: Props) => {
+  console.log(disclosure);
+  const { onOpen } = disclosure;
   const touched = useAppSelector(selectIsFileTouched);
   const { startOpenFile } = useTryOpenFile();
 
@@ -14,7 +19,7 @@ const Open = () => {
     if (touched) {
       // open the modal
       // only the modal will call startOpenFile
-      disclosure.onOpen();
+      onOpen();
     } else {
       // if the file is not touched
       startOpenFile();

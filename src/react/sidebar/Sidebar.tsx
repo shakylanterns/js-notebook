@@ -1,12 +1,13 @@
 import { useDisclosure, VStack } from "@chakra-ui/react";
 import { Fragment } from "react";
-import { FaCog, FaHome } from "react-icons/fa";
+import { FaCog } from "react-icons/fa";
+import { useTryOpenFile } from "../hooks/useTryOpenFile";
 import UnsavedFileModal from "../modals/UnsavedFileModal";
+import Home from "./Home";
 import Open from "./Open";
 import Save from "./Save";
 import SaveAs from "./SaveAs";
 import SidebarIcon from "./SidebarIcon";
-import { useTryOpenFile } from "./useTryOpenFile";
 
 const Sidebar = () => {
   const disclosure = useDisclosure();
@@ -23,13 +24,13 @@ const Sidebar = () => {
         minWidth="85px"
         maxWidth="10vw"
       >
-        <SidebarIcon icon={FaHome} text="Home" />
-        <Open />
+        <Home />
+        <Open disclosure={disclosure} />
         <Save />
         <SaveAs />
         <SidebarIcon icon={FaCog} text="Settings" />
       </VStack>
-      <UnsavedFileModal {...disclosure} startOpenFile={startOpenFile} />
+      <UnsavedFileModal disclosure={disclosure} startOpenFile={startOpenFile} />
     </Fragment>
   );
 };

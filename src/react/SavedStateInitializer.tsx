@@ -8,7 +8,6 @@ const SavedStateInitializer = () => {
   useEffect(() => {
     const loadState = async () => {
       const state = await window.electron.reloadApplicationState();
-      console.log("Restored state: ", state);
       if (!state) {
         return;
       }

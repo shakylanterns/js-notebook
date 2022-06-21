@@ -14,6 +14,8 @@ export interface CellSlice {
   filePath: string;
   touched: boolean;
   fileError: string;
+  hasEditorOpened: boolean;
+  recentFiles: string[];
 }
 
 export type CellContentWithIndex = CellContent & { index: number };
@@ -83,6 +85,8 @@ const initialState: CellSlice = {
   filePath: "",
   fileError: "",
   touched: false,
+  hasEditorOpened: false,
+  recentFiles: [],
 };
 
 const cellSlice = createSlice({
@@ -149,6 +153,24 @@ const cellSlice = createSlice({
     setFilePath(state, action: PayloadAction<string>) {
       state.filePath = action.payload;
     },
+    closeEditor(state) {
+      state.hasEditorOpened = false;
+      state.filePath = "";
+      state.fileError = "";
+      state.touched = false;
+    },
+    startEditor(state) {
+      state.hasEditorOpened = true;
+      state.filePath = "";
+      state.fileError = "";
+      state.touched = true;
+    },
+    setRecentFiles(state, action: PayloadAction<string[]>) {
+      state.recentFiles = action.payload;
+    },
+    addRecentFile(state, action: PayloadAction<string>) {
+      state.recentFiles.push(action.payload);
+    },
   },
   initialState,
   extraReducers: (builder) => {
@@ -187,6 +209,7 @@ const cellSlice = createSlice({
         state.title = items.title;
         state.touched = false;
         state.fileError = "";
+        state.hasEditorOpened = true;
       } catch (err) {
         state.fileError = err.message;
       }
@@ -206,6 +229,8 @@ export const {
   shiftCellBefore,
   setTitle,
   setFilePath,
+  closeEditor,
+  startEditor,
 } = cellSlice.actions;
 
 export const selectCells = (state: RootState) => state.cells.cells;
@@ -214,5 +239,8 @@ export const selectTitle = (state: RootState) => state.cells.title;
 export const selectFilePath = (state: RootState) => state.cells.filePath;
 export const selectIsFileTouched = (state: RootState) => state.cells.touched;
 export const selectFileError = (state: RootState) => state.cells.fileError;
+export const selectHasEditorOpened = (state: RootState) =>
+  state.cells.hasEditorOpened;
+export const selectRecentFiles = (state: RootState) => state.cells.recentFiles;
 
 export default cellSlice.reducer;

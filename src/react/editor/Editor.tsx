@@ -1,4 +1,5 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
+import { Fragment } from "react";
 import { useAppSelector } from "../../redux/hooks";
 import { selectCells } from "../../redux/reducers/cells";
 import Cell from "../cell/Cell";
@@ -22,16 +23,10 @@ const Editor = () => {
   );
 
   return (
-    <Box
-      flexGrow={1}
-      paddingX={8}
-      paddingTop={12}
-      maxWidth="90vw"
-      minHeight="100vh"
-    >
+    <Fragment>
       <DocumentTitle />
       {editorElements}
-    </Box>
+    </Fragment>
   );
 };
 

@@ -10,10 +10,13 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-type Props = ReturnType<typeof useDisclosure> & { startOpenFile: () => void };
+interface Props {
+  disclosure: ReturnType<typeof useDisclosure>;
+  startOpenFile: () => void;
+}
 
-const UnsavedFileModal = (props: Props) => {
-  const { isOpen, onClose, startOpenFile } = props;
+const UnsavedFileModal: React.FC<Props> = ({ disclosure, startOpenFile }) => {
+  const { isOpen, onClose } = disclosure;
 
   return (
     <Modal onClose={onClose} isOpen={isOpen}>

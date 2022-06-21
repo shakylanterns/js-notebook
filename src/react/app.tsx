@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { Provider } from "react-redux";
 import { initEsbuild } from "../lib/esbuildInit";
 import { store } from "../redux/store";
-import Editor from "./editor/Editor";
+import EditingArea from "./EditingArea";
 import SaveBeforeQuitModal from "./modals/SaveBeforeQuitModal";
 import NotificationProvier from "./NotificationContext";
 import "./patch.css";
@@ -29,7 +29,7 @@ const App = () => {
         <NotificationProvier>
           <Flex>
             <Sidebar />
-            <Editor />
+            <EditingArea />
           </Flex>
         </NotificationProvier>
         <SavedStateInitializer />
