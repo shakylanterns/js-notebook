@@ -41,8 +41,9 @@ type Actions =
 
 const queueRedcuer = (state: Notification[], action: Actions) => {
   switch (action.type) {
-    case "queue":
+    case "queue": {
       return [...state, action.payload];
+    }
     case "remove-front": {
       const newState = [...state];
       newState.shift();
@@ -64,7 +65,6 @@ const NotificationProvier: React.FC<Props> = ({ children }) => {
         type,
       },
     });
-
     setTimeout(() => {
       dispatch({
         type: "remove-front",

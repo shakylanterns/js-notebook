@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
 export type CellType = "code" | "markdown";
@@ -7,6 +7,13 @@ export interface CellContent {
   type: CellType;
   text: string;
 }
+
+export interface NoteFile {
+  title: string;
+  cells: CellContent[];
+}
+
+export type NoteFileWithPath = NoteFile & { filePath: string };
 
 export interface CellSlice {
   cells: CellContent[];
@@ -24,60 +31,8 @@ export type CellTypeWithIndex = { type: CellType; index: number };
 export interface SaveFileOptions {
   content: string;
   ignoreCurrentFilePath?: boolean;
-}
-
-export const saveFile = createAsyncThunk.withTypes<{
-  state: RootState;
-}>()(
-  "cells/saveFile",
-  async (
-    { content, ignoreCurrentFilePath }: SaveFileOptions,
-    { rejectWithValue, getState }
-  ) => {
-    let cellFilePath = getState().cells.filePath;
-    if (ignoreCurrentFilePath || !cellFilePath) {
-      const { canceled, filePath } = await window.electron.getSaveFilePath();
-      if (canceled) {
-        return rejectWithValue("cancelled");
-      }
-      cellFilePath =
-        !filePath.endsWith(".jsnote") && !filePath.endsWith(".jsnote.json")
-          ? filePath + ".jsnote"
-          : filePath;
-    }
-    const error = await window.electron.saveFile(cellFilePath, content);
-    if (error) {
-      return rejectWithValue(error);
-    }
-    return cellFilePath;
-  }
-);
-
-export interface OpenFileOptions {
   filePath?: string;
 }
-
-export const openFile = createAsyncThunk(
-  "cells/openFile",
-  async ({ filePath }: OpenFileOptions, { rejectWithValue }) => {
-    let _filePath = filePath;
-    if (!filePath) {
-      const { canceled, filePaths } = await window.electron.loadFilePath();
-      if (canceled) {
-        return rejectWithValue("cancelled");
-      }
-      _filePath = filePaths[0];
-    }
-    const { error, content } = await window.electron.loadFile(_filePath);
-    if (error) {
-      return rejectWithValue(error);
-    }
-    return {
-      filePath: _filePath,
-      content,
-    };
-  }
-);
 
 const initialState: CellSlice = {
   cells: [],
@@ -171,54 +126,37 @@ const cellSlice = createSlice({
     addRecentFile(state, action: PayloadAction<string>) {
       state.recentFiles.push(action.payload);
     },
-  },
-  initialState,
-  extraReducers: (builder) => {
-    builder.addCase(saveFile.fulfilled, (state, { payload }) => {
+    removeRecentFile(state, action: PayloadAction<string>) {
+      state.recentFiles = state.recentFiles.filter((n) => n !== action.payload);
+    },
+    openedFile(state, action: PayloadAction<NoteFileWithPath>) {
+      const file = action.payload;
+      state.filePath = file.filePath;
+      state.cells = file.cells;
+      state.title = file.title;
+      state.touched = false;
+      state.fileError = "";
+      state.hasEditorOpened = true;
+      const found =
+        state.recentFiles.findIndex((rf) => rf === file.filePath) !== -1;
+      if (!found) {
+        state.recentFiles.unshift(file.filePath);
+      }
+    },
+    savedFile(state, { payload }: PayloadAction<string>) {
       state.filePath = payload;
       state.touched = false;
       state.fileError = "";
-    });
-
-    builder.addCase(saveFile.rejected, (state, action) => {
-      state.fileError = action.payload as string;
-    });
-
-    builder.addCase(openFile.fulfilled, (state, { payload }) => {
-      state.filePath = payload.filePath;
-      try {
-        const items = JSON.parse(payload.content);
-        if (typeof items.title !== "string") {
-          throw new Error("Parse Error: Document title is malformed");
-        }
-        if (!(items.cells instanceof Array)) {
-          throw new Error("Parse Error: Cells field is not an array");
-        }
-        items.cells.forEach((cell: Partial<CellContent>) => {
-          if (
-            !cell.type ||
-            (cell.type !== "markdown" && cell.type !== "code")
-          ) {
-            throw new Error("Parse Error: Cell type is invalid");
-          }
-          if (!cell.text) {
-            throw new Error("Parse Error: Cell has no text");
-          }
-        });
-        state.cells = items.cells;
-        state.title = items.title;
-        state.touched = false;
-        state.fileError = "";
-        state.hasEditorOpened = true;
-      } catch (err) {
-        state.fileError = err.message;
+      const found = state.recentFiles.findIndex((rf) => rf === payload) !== -1;
+      if (!found) {
+        state.recentFiles.unshift(payload);
       }
-    });
-
-    builder.addCase(openFile.rejected, (state, action) => {
-      state.fileError = action.payload as string;
-    });
+    },
+    setFileError(state, action: PayloadAction<string>) {
+      state.fileError = action.payload;
+    },
   },
+  initialState,
 });
 
 export const {
@@ -231,6 +169,12 @@ export const {
   setFilePath,
   closeEditor,
   startEditor,
+  setRecentFiles,
+  addRecentFile,
+  setFileError,
+  openedFile,
+  savedFile,
+  removeRecentFile,
 } = cellSlice.actions;
 
 export const selectCells = (state: RootState) => state.cells.cells;

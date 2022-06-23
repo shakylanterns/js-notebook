@@ -20,4 +20,5 @@ export const IPCEvents = {
 export interface ApplicationState {
   openedFilePath: string;
   scrollPosition: number;
+  recentFiles: string[];
 }

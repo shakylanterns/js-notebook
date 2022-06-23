@@ -1,9 +1,11 @@
 import { Fragment, useEffect } from "react";
 import { useAppDispatch } from "../redux/hooks";
-import { openFile } from "../redux/reducers/cells";
+import { setRecentFiles } from "../redux/reducers/cells";
+import { useTryOpenFile } from "./hooks/useTryOpenFile";
 
 const SavedStateInitializer = () => {
   const dispatch = useAppDispatch();
+  const { startOpenFile } = useTryOpenFile();
 
   useEffect(() => {
     const loadState = async () => {
@@ -12,10 +14,13 @@ const SavedStateInitializer = () => {
         return;
       }
       if (state.openedFilePath) {
-        dispatch(openFile({ filePath: state.openedFilePath }));
+        startOpenFile({ filePath: state.openedFilePath });
       }
       if (state.scrollPosition) {
         window.scrollTo(0, state.scrollPosition);
+      }
+      if (state.recentFiles) {
+        dispatch(setRecentFiles(state.recentFiles));
       }
     };
 

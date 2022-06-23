@@ -10,7 +10,6 @@ type Props = {
 };
 
 const Open = ({ disclosure }: Props) => {
-  console.log(disclosure);
   const { onOpen } = disclosure;
   const touched = useAppSelector(selectIsFileTouched);
   const { startOpenFile } = useTryOpenFile();
