@@ -4,8 +4,8 @@ import { editor } from "monaco-editor";
 import { useRef, useState } from "react";
 import { getEsbuild } from "../../lib/esbuildInit";
 import { unpkgFilePlugin } from "../../lib/unpkgFilePlugin";
-import { useAppDispatch } from "../../redux/hooks";
-import { updateCell } from "../../redux/reducers/cells";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { selectFileSettings, updateCell } from "../../redux/reducers/cells";
 import { monacoEditorOptions } from "./editorUtils";
 
 const IFRMAE_HTML = `
@@ -65,6 +65,11 @@ const CodeCell: React.FC<Props> = ({ text, index }) => {
   // about two lines in height
   const [editorHeight, setEditorHeight] = useState("70px");
   const dispatch = useAppDispatch();
+  const settings = useAppSelector(selectFileSettings) || {
+    defaultLanguage: "javascript",
+  };
+
+  console.log("re-rendering code cell");
 
   const onBlur = () => {
     if (!isTyping) {
@@ -106,10 +111,12 @@ const CodeCell: React.FC<Props> = ({ text, index }) => {
       const result = await (
         await getEsbuild()
       ).build({
-        entryPoints: ["index.js"],
+        entryPoints: [
+          settings.defaultLanguage === "javascript" ? "index.js" : "index.ts",
+        ],
         bundle: true,
         outfile: "out.js",
-        plugins: [unpkgFilePlugin(code)],
+        plugins: [unpkgFilePlugin(code, settings.defaultLanguage)],
         define: {
           // better error messages from packages
           // the code snippets are not made for production anyway
@@ -146,7 +153,7 @@ const CodeCell: React.FC<Props> = ({ text, index }) => {
     <Box onFocus={() => setIsTyping(true)} onBlur={onBlur}>
       <Box display="block" marginLeft={-4}>
         <Editor
-          defaultLanguage={"javascript"}
+          language={settings.defaultLanguage}
           height={editorHeight}
           onMount={handleEditorOnMount}
           options={monacoEditorOptions()}

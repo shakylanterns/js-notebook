@@ -33,4 +33,7 @@ contextBridge.exposeInMainWorld("electron", {
       IPCEvents.GetApplicationState
     ) as Promise<ApplicationState | null>;
   },
+  deleteNote: (filePath: string) => {
+    return ipcRenderer.invoke(IPCEvents.DeleteFile, filePath);
+  },
 });

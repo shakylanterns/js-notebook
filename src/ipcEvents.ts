@@ -1,5 +1,5 @@
 import { app, dialog, ipcMain } from "electron";
-import { readFile, writeFile } from "fs/promises";
+import { readFile, unlink, writeFile } from "fs/promises";
 import { ApplicationState, IPCEvents } from "./ipcTypes";
 import { Store } from "./Store";
 
@@ -75,6 +75,15 @@ export const registerIPCEvents = () => {
       return state;
     } catch (err) {
       return null;
+    }
+  });
+
+  ipcMain.handle(IPCEvents.DeleteFile, async (_, filePath: string) => {
+    try {
+      await unlink(filePath);
+      return true;
+    } catch (_1) {
+      return false;
     }
   });
 };

@@ -16,6 +16,7 @@ declare global {
       listenToWindowClose: (callback: () => void) => void;
       quitProgram: (state: ApplicationState) => void;
       reloadApplicationState: () => Promise<ApplicationState | null>;
+      deleteNote: (filePath: string) => Promise<boolean>;
     };
   }
 }

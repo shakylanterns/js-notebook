@@ -1,9 +1,11 @@
+import { FileSettings } from "../../ipcTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
   savedFile,
   SaveFileOptions,
   selectCells,
   selectFilePath,
+  selectFileSettings,
   selectTitle,
   setFileError,
 } from "../../redux/reducers/cells";
@@ -32,17 +34,28 @@ const saveFile = async ({
   return cellFilePath;
 };
 
+export interface StartSaveFileOptions {
+  ignoreCurrentFilePath: boolean;
+  // for immediate setting changes
+  settings?: FileSettings;
+}
+
 export const useTrySaveFile = () => {
   const { createNotification } = useNotification();
   const dispatch = useAppDispatch();
   const title = useAppSelector(selectTitle);
   const cells = useAppSelector(selectCells);
+  const settings = useAppSelector(selectFileSettings);
   const filePath = useAppSelector(selectFilePath);
 
-  const startSaveFile = async (ignoreCurrentFilePath: boolean) => {
+  const startSaveFile = async ({
+    ignoreCurrentFilePath,
+    settings: _settings,
+  }: StartSaveFileOptions) => {
     const toBeSerialized = {
       title,
       cells,
+      settings: _settings || settings,
     };
     try {
       const path = await saveFile({

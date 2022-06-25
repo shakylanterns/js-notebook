@@ -1,10 +1,10 @@
-import { Flex } from "@chakra-ui/react";
-import { Fragment } from "react";
+import { Box, Flex } from "@chakra-ui/react";
 import { useAppSelector } from "../../redux/hooks";
 import { selectCells } from "../../redux/reducers/cells";
 import Cell from "../cell/Cell";
 import AddCell from "./AddCell";
 import DocumentTitle from "./DocumentTitle";
+import FileControls from "./FileControls";
 
 const Editor = () => {
   const cells = useAppSelector(selectCells);
@@ -23,10 +23,11 @@ const Editor = () => {
   );
 
   return (
-    <Fragment>
+    <Box position="relative">
+      <FileControls />
       <DocumentTitle />
       {editorElements}
-    </Fragment>
+    </Box>
   );
 };
 

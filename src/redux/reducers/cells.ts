@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { FileSettings } from "../../ipcTypes";
 import { RootState } from "../store";
 
 export type CellType = "code" | "markdown";
@@ -11,6 +12,7 @@ export interface CellContent {
 export interface NoteFile {
   title: string;
   cells: CellContent[];
+  settings: FileSettings;
 }
 
 export type NoteFileWithPath = NoteFile & { filePath: string };
@@ -23,6 +25,7 @@ export interface CellSlice {
   fileError: string;
   hasEditorOpened: boolean;
   recentFiles: string[];
+  settings: FileSettings | null;
 }
 
 export type CellContentWithIndex = CellContent & { index: number };
@@ -42,6 +45,7 @@ const initialState: CellSlice = {
   touched: false,
   hasEditorOpened: false,
   recentFiles: [],
+  settings: null,
 };
 
 const cellSlice = createSlice({
@@ -137,6 +141,7 @@ const cellSlice = createSlice({
       state.touched = false;
       state.fileError = "";
       state.hasEditorOpened = true;
+      state.settings = file.settings;
       const found =
         state.recentFiles.findIndex((rf) => rf === file.filePath) !== -1;
       if (!found) {
@@ -151,6 +156,19 @@ const cellSlice = createSlice({
       if (!found) {
         state.recentFiles.unshift(payload);
       }
+    },
+    deleteNote(state, { payload }: PayloadAction<string>) {
+      state.filePath = "";
+      state.touched = false;
+      state.fileError = "";
+      state.hasEditorOpened = false;
+      state.cells = [];
+      state.title = "";
+      state.recentFiles = state.recentFiles.filter((rf) => rf !== payload);
+      state.settings = null;
+    },
+    setFileSettings(state, { payload }: PayloadAction<FileSettings>) {
+      state.settings = payload;
     },
     setFileError(state, action: PayloadAction<string>) {
       state.fileError = action.payload;
@@ -175,6 +193,8 @@ export const {
   openedFile,
   savedFile,
   removeRecentFile,
+  deleteNote,
+  setFileSettings,
 } = cellSlice.actions;
 
 export const selectCells = (state: RootState) => state.cells.cells;
@@ -186,5 +206,6 @@ export const selectFileError = (state: RootState) => state.cells.fileError;
 export const selectHasEditorOpened = (state: RootState) =>
   state.cells.hasEditorOpened;
 export const selectRecentFiles = (state: RootState) => state.cells.recentFiles;
+export const selectFileSettings = (state: RootState) => state.cells.settings;
 
 export default cellSlice.reducer;

@@ -6,7 +6,7 @@ const Save = () => {
   const { startSaveFile } = useTrySaveFile();
 
   const onSaveBtnClick = () => {
-    startSaveFile(false);
+    startSaveFile({ ignoreCurrentFilePath: false });
   };
 
   return <SidebarIcon icon={FaSave} text="Save" onClick={onSaveBtnClick} />;

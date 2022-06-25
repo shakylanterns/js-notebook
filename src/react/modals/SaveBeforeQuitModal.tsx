@@ -18,7 +18,7 @@ import { useTrySaveFile } from "../hooks/useTrySaveFile";
 const SaveBeforeQuitModal = () => {
   const touched = useAppSelector(selectIsFileTouched);
   const { startSaveFile } = useTrySaveFile();
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { isOpen, onClose } = useDisclosure();
   const { quitProgram } = useQuitProgram();
 
   function onQuitBtnClick() {
@@ -26,7 +26,7 @@ const SaveBeforeQuitModal = () => {
   }
 
   async function onSaveBtnClick() {
-    await startSaveFile(false);
+    await startSaveFile({ ignoreCurrentFilePath: false });
     setTimeout(() => {
       quitProgram();
     }, 1000);

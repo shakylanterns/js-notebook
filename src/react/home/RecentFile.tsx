@@ -1,5 +1,5 @@
 import { Link, ListItem, Text } from "@chakra-ui/react";
-import { FaTrash } from "react-icons/fa";
+import { FaMinus } from "react-icons/fa";
 import { breakdownFileName, getFileName } from "../../lib/fileNameUtils";
 import { useAppDispatch } from "../../redux/hooks";
 import { removeRecentFile } from "../../redux/reducers/cells";
@@ -34,7 +34,7 @@ const RecentFile: React.FC<Props> = ({ rf }) => {
         onClick={onTrashIconClick}
         cursor="pointer"
       >
-        <FaTrash display="inline-block" />
+        <FaMinus display="inline-block" />
       </Text>
     </ListItem>
   );

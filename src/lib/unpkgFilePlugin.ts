@@ -1,15 +1,17 @@
 import { OnLoadResult, Plugin } from "esbuild-wasm";
 import { get, set } from "idb-keyval";
+import { Languages } from "../ipcTypes";
 
-export const unpkgFilePlugin = (input: string): Plugin => {
+export const unpkgFilePlugin = (input: string, language: Languages): Plugin => {
+  const loader = language === "javascript" ? "jsx" : "tsx";
   return {
     name: "unpkg-file-plugin",
     setup: (build) => {
       // "index.js" is not a "file", but the code cells
       // a special loader is set up for this path
-      build.onResolve({ filter: /^index\.js$/ }, () => {
+      build.onResolve({ filter: /^index\.(j|t)s$/ }, (args) => {
         return {
-          path: "index.js",
+          path: args.path,
           namespace: "u",
         };
       });
@@ -42,7 +44,7 @@ export const unpkgFilePlugin = (input: string): Plugin => {
       build.onLoad({ filter: /^index\.js$/, namespace: "u" }, () => {
         return {
           contents: input,
-          loader: "jsx",
+          loader,
         };
       });
 
@@ -69,7 +71,7 @@ export const unpkgFilePlugin = (input: string): Plugin => {
         `;
         const toBeCached: OnLoadResult = {
           contents: injectedCSS,
-          loader: "jsx",
+          loader,
           resolveDir: new URL(".", result.url).pathname,
         };
 
@@ -88,7 +90,7 @@ export const unpkgFilePlugin = (input: string): Plugin => {
         const text = await result.text();
         const toBeCached: OnLoadResult = {
           contents: text,
-          loader: "jsx",
+          loader,
           // tell the relative paths where are you relative to
           resolveDir: new URL(".", result.url).pathname,
         };
