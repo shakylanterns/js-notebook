@@ -3,6 +3,7 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -13,43 +14,52 @@ import {
   Select,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { ChangeEventHandler, useState } from "react";
-import { FileSettings as FileSettingsModal, Languages } from "../../ipcTypes";
+import { ChangeEventHandler, useState } from "react";
+import { FileSettings, Languages } from "../../ipcTypes";
 import { useAppSelector } from "../../redux/hooks";
-import { selectFileSettings } from "../../redux/reducers/cells";
+import { selectAppSettings } from "../../redux/reducers/app";
 
 type Props = {
   disclosure: ReturnType<typeof useDisclosure>;
-  setFileSettings: (settings: FileSettingsModal) => void;
+  createNewNote: (fileSettings: FileSettings, title: string) => void;
 };
 
-const FileSettingsModal: React.FC<Props> = ({
-  disclosure,
-  setFileSettings,
-}) => {
-  const settings = useAppSelector(selectFileSettings) || {
-    defaultLanguage: "javascript",
-  };
-  const [defaultLanguage, setDefaultLanguage] = useState<Languages>(
+const AddFileModal: React.FC<Props> = ({ disclosure, createNewNote }) => {
+  const settings = useAppSelector(selectAppSettings);
+  const { onClose, isOpen } = disclosure;
+  const [defaultLanguage, setDefaultLanguage] = useState(
     settings.defaultLanguage
   );
-  const { onClose, isOpen } = disclosure;
+  const [title, setTitle] = useState("");
+
+  function onConfirmBtnClick() {
+    createNewNote(
+      {
+        defaultLanguage,
+      },
+      title
+    );
+  }
 
   const onLanguageChange: ChangeEventHandler<HTMLSelectElement> = (event) => {
     setDefaultLanguage(event.target.value as Languages);
   };
 
-  function onSaveButtonClick() {
-    setFileSettings({ defaultLanguage });
-  }
+  const onTitleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    setTitle(event.target.value);
+  };
 
   return (
     <Modal onClose={onClose} isOpen={isOpen}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>File Settings</ModalHeader>
+        <ModalHeader>Delete File</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
+          <FormControl marginBottom={4}>
+            <FormLabel>Title</FormLabel>
+            <Input onChange={onTitleChange} value={title} />
+          </FormControl>
           <FormControl>
             <FormLabel>Language</FormLabel>
             <Select value={defaultLanguage} onChange={onLanguageChange}>
@@ -65,8 +75,8 @@ const FileSettingsModal: React.FC<Props> = ({
           <Button colorScheme="primary" mr={3} onClick={onClose}>
             Cancel
           </Button>
-          <Button colorScheme="red" mr={3} onClick={onSaveButtonClick}>
-            Save Settings
+          <Button colorScheme="red" mr={3} onClick={onConfirmBtnClick}>
+            Confirm
           </Button>
         </ModalFooter>
       </ModalContent>
@@ -74,4 +84,4 @@ const FileSettingsModal: React.FC<Props> = ({
   );
 };
 
-export default FileSettingsModal;
+export default AddFileModal;

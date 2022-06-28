@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { ApplicationState, IPCEvents } from "./ipcTypes";
+import { ApplicationSettings, ApplicationState, IPCEvents } from "./ipcTypes";
 
 const listenToWindowCloseClosure = () => {
   let ipcRendererRef: Electron.IpcRenderer = null;
@@ -35,5 +35,11 @@ contextBridge.exposeInMainWorld("electron", {
   },
   deleteNote: (filePath: string) => {
     return ipcRenderer.invoke(IPCEvents.DeleteFile, filePath);
+  },
+  getSettings: () => {
+    return ipcRenderer.invoke(IPCEvents.GetSettings);
+  },
+  saveSettings: (settings: ApplicationSettings) => {
+    return ipcRenderer.invoke(IPCEvents.SaveSettings, settings);
   },
 });

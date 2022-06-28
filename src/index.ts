@@ -43,6 +43,9 @@ const createWindow = async () => {
     event.preventDefault();
   });
 
+  // remove menu
+  mainWindow.setMenu(null);
+
   // maximize the window by default
   mainWindow.maximize();
 

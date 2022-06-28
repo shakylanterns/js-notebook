@@ -1,8 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
+import app from "./reducers/app";
 import cells from "./reducers/cells";
 
 export const store = configureStore({
   reducer: {
+    app,
     cells,
   },
 });

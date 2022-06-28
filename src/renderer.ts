@@ -2,7 +2,7 @@ import { render } from "./react";
 
 import { loader } from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
-import { ApplicationState } from "./ipcTypes";
+import { ApplicationSettings, ApplicationState } from "./ipcTypes";
 
 declare global {
   interface Window {
@@ -17,6 +17,8 @@ declare global {
       quitProgram: (state: ApplicationState) => void;
       reloadApplicationState: () => Promise<ApplicationState | null>;
       deleteNote: (filePath: string) => Promise<boolean>;
+      getSettings: () => Promise<ApplicationSettings>;
+      saveSettings: (settings: ApplicationSettings) => Promise<boolean>;
     };
   }
 }

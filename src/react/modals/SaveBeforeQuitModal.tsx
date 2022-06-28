@@ -18,7 +18,7 @@ import { useTrySaveFile } from "../hooks/useTrySaveFile";
 const SaveBeforeQuitModal = () => {
   const touched = useAppSelector(selectIsFileTouched);
   const { startSaveFile } = useTrySaveFile();
-  const { isOpen, onClose } = useDisclosure();
+  const { isOpen, onClose, onOpen } = useDisclosure();
   const { quitProgram } = useQuitProgram();
 
   function onQuitBtnClick() {
@@ -34,8 +34,7 @@ const SaveBeforeQuitModal = () => {
 
   useEffect(() => {
     window.electron.listenToWindowClose(() => {
-      // touched ? onOpen() : quitProgram();
-      quitProgram();
+      touched ? onOpen() : quitProgram();
     });
   }, [touched]);
 

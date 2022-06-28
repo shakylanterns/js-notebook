@@ -6,7 +6,9 @@ export type EventTypes =
   | "save-before-quit"
   | "quit"
   | "get-application-state"
-  | "delete-file";
+  | "delete-file"
+  | "save-settings"
+  | "get-settings";
 
 export const IPCEvents = {
   ShowSaveDialog: "show-save-dialog",
@@ -17,12 +19,18 @@ export const IPCEvents = {
   Quit: "quit",
   GetApplicationState: "get-application-state",
   DeleteFile: "delete-file",
+  SaveSettings: "save-settings",
+  GetSettings: "get-settings",
 };
 
 export interface ApplicationState {
   openedFilePath: string;
   scrollPosition: number;
   recentFiles: string[];
+}
+
+export interface ApplicationSettings {
+  defaultLanguage: Languages;
 }
 
 export type Languages = "javascript" | "typescript";

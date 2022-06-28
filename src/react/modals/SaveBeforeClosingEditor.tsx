@@ -28,7 +28,7 @@ const SaveBeforeClosingEditor = ({ disclosure }: Props) => {
   }
 
   async function onSaveBtnClick() {
-    await startSaveFile(false);
+    await startSaveFile({ ignoreCurrentFilePath: false });
     onClose();
   }
 

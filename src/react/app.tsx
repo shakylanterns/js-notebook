@@ -1,7 +1,7 @@
 import { ChakraProvider, Flex } from "@chakra-ui/react";
 import { useMonaco } from "@monaco-editor/react";
 import githubTheme from "monaco-themes/themes/GitHub Light.json";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { initEsbuild } from "../lib/esbuildInit";
 import { store } from "../redux/store";
@@ -10,11 +10,13 @@ import SaveBeforeQuitModal from "./modals/SaveBeforeQuitModal";
 import NotificationProvier from "./NotificationContext";
 import "./patch.css";
 import SavedStateInitializer from "./SavedStateInitializer";
+import SettingsScreen from "./settings/SettingsScreen";
 import Sidebar from "./sidebar/Sidebar";
 import { theme } from "./theme";
 
 const App = () => {
   const monaco = useMonaco();
+  const [inSettingsPage, setInSettingsPage] = useState(false);
 
   useEffect(() => {
     initEsbuild();
@@ -28,8 +30,11 @@ const App = () => {
       <ChakraProvider theme={theme}>
         <NotificationProvier>
           <Flex>
-            <Sidebar />
-            <EditingArea />
+            <Sidebar
+              goToSettingsPage={() => setInSettingsPage(true)}
+              goToHomePage={() => setInSettingsPage(false)}
+            />
+            {inSettingsPage ? <SettingsScreen /> : <EditingArea />}
           </Flex>
         </NotificationProvier>
         <SavedStateInitializer />

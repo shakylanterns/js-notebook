@@ -6,7 +6,11 @@ import { closeEditor, selectIsFileTouched } from "../../redux/reducers/cells";
 import SaveBeforeClosingEditor from "../modals/SaveBeforeClosingEditor";
 import SidebarIcon from "./SidebarIcon";
 
-const Home = () => {
+interface Props {
+  goToHomePage: () => void;
+}
+
+const Home: React.FC<Props> = ({ goToHomePage }) => {
   const disclosure = useDisclosure();
   const touched = useAppSelector(selectIsFileTouched);
   const dispatch = useAppDispatch();
@@ -15,6 +19,7 @@ const Home = () => {
     if (touched) {
       disclosure.onOpen();
     } else {
+      goToHomePage();
       dispatch(closeEditor());
     }
   };

@@ -1,5 +1,8 @@
+import objectMerge from "object-merge";
 import { Fragment, useEffect } from "react";
+import { ApplicationSettings } from "../ipcTypes";
 import { useAppDispatch } from "../redux/hooks";
+import { setSettings } from "../redux/reducers/app";
 import { setRecentFiles } from "../redux/reducers/cells";
 import { useTryOpenFile } from "./hooks/useTryOpenFile";
 
@@ -25,6 +28,21 @@ const SavedStateInitializer = () => {
     };
 
     loadState();
+  }, []);
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      const state = await window.electron.getSettings();
+      const merged = objectMerge(
+        {
+          defaultLanguage: "javascript",
+        },
+        state
+      );
+      dispatch(setSettings(merged as ApplicationSettings));
+    };
+
+    loadSettings();
   }, []);
 
   return <Fragment></Fragment>;

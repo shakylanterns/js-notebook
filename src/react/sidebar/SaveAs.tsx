@@ -6,7 +6,9 @@ const SaveAs = () => {
   const { startSaveFile } = useTrySaveFile();
 
   const onSaveAsBtnClick = () => {
-    startSaveFile(true);
+    startSaveFile({
+      ignoreCurrentFilePath: true,
+    });
   };
 
   return (
