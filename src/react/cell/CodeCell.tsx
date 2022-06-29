@@ -69,8 +69,6 @@ const CodeCell: React.FC<Props> = ({ text, index }) => {
     defaultLanguage: "javascript",
   };
 
-  console.log("re-rendering code cell");
-
   const onBlur = () => {
     if (!isTyping) {
       return false;

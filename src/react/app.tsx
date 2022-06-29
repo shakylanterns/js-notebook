@@ -27,6 +27,7 @@ const App = () => {
 
   return (
     <Provider store={store}>
+      <SavedStateInitializer />
       <ChakraProvider theme={theme}>
         <NotificationProvier>
           <Flex>
@@ -34,10 +35,15 @@ const App = () => {
               goToSettingsPage={() => setInSettingsPage(true)}
               goToHomePage={() => setInSettingsPage(false)}
             />
-            {inSettingsPage ? <SettingsScreen /> : <EditingArea />}
+            {inSettingsPage ? (
+              <SettingsScreen
+                exitSettingsPage={() => setInSettingsPage(false)}
+              />
+            ) : (
+              <EditingArea />
+            )}
           </Flex>
         </NotificationProvier>
-        <SavedStateInitializer />
         <SaveBeforeQuitModal />
       </ChakraProvider>
     </Provider>

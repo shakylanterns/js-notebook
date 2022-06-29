@@ -14,7 +14,7 @@ import {
   Select,
   useDisclosure,
 } from "@chakra-ui/react";
-import { ChangeEventHandler, useState } from "react";
+import { ChangeEventHandler, useEffect, useState } from "react";
 import { FileSettings, Languages } from "../../ipcTypes";
 import { useAppSelector } from "../../redux/hooks";
 import { selectAppSettings } from "../../redux/reducers/app";
@@ -27,10 +27,16 @@ type Props = {
 const AddFileModal: React.FC<Props> = ({ disclosure, createNewNote }) => {
   const settings = useAppSelector(selectAppSettings);
   const { onClose, isOpen } = disclosure;
+  const [title, setTitle] = useState("");
   const [defaultLanguage, setDefaultLanguage] = useState(
     settings.defaultLanguage
   );
-  const [title, setTitle] = useState("");
+
+  // settings is updated, but defaultLanguage is not updated
+  // for some reason
+  useEffect(() => {
+    setDefaultLanguage(settings.defaultLanguage);
+  }, [settings]);
 
   function onConfirmBtnClick() {
     createNewNote(
@@ -53,7 +59,7 @@ const AddFileModal: React.FC<Props> = ({ disclosure, createNewNote }) => {
     <Modal onClose={onClose} isOpen={isOpen}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Delete File</ModalHeader>
+        <ModalHeader>Create Note</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl marginBottom={4}>

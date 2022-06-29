@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  ButtonGroup,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -11,11 +12,17 @@ import { ChangeEventHandler, useState } from "react";
 import { Languages } from "../../ipcTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { selectAppSettings, setSettings } from "../../redux/reducers/app";
+import { selectHasEditorOpened } from "../../redux/reducers/cells";
 import { useNotification } from "../NotificationContext";
 
-const SettingsScreen = () => {
+interface Props {
+  exitSettingsPage: () => void;
+}
+
+const SettingsScreen: React.FC<Props> = ({ exitSettingsPage }) => {
   const dispatch = useAppDispatch();
   const settings = useAppSelector(selectAppSettings);
+  const isEditing = useAppSelector(selectHasEditorOpened);
   const [defaultLanguage, setDefaultLanguage] = useState(
     settings.defaultLanguage
   );
@@ -58,9 +65,14 @@ const SettingsScreen = () => {
           changed in file settings.
         </FormHelperText>
       </FormControl>
-      <Button onClick={saveSettings} colorScheme="primary" marginTop={12}>
-        Save Settings
-      </Button>
+      <ButtonGroup marginTop={12} spacing={4}>
+        <Button onClick={saveSettings} colorScheme="primary">
+          Save Settings
+        </Button>
+        {isEditing && (
+          <Button onClick={exitSettingsPage}>Go Back to Editor</Button>
+        )}
+      </ButtonGroup>
     </Box>
   );
 };
