@@ -6,13 +6,9 @@ export const getFileName = (filePath: string) =>
   new URL("file://" + filePath).pathname.split("/").pop();
 
 export const breakdownFileName = (fileName: string) => {
+  // split will always return an array of at least size one
   const parts = fileName.split(".");
-  if (parts.length === 0) {
-    return {
-      name: "",
-      ext: "",
-    };
-  } else if (parts.length === 1) {
+  if (parts.length <= 1) {
     return {
       name: parts[0],
       ext: "",
@@ -22,7 +18,7 @@ export const breakdownFileName = (fileName: string) => {
     parts.shift();
     return {
       name,
-      ext: parts.join(""),
+      ext: parts.join("."),
     };
   }
 };

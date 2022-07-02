@@ -1,7 +1,7 @@
 import { app, dialog, ipcMain } from "electron";
 import { readFile, unlink, writeFile } from "fs/promises";
 import { ApplicationSettings, ApplicationState, IPCEvents } from "./ipcTypes";
-import { Store } from "./Store";
+import { Store } from "./lib/Store";
 
 // evil global variable :(
 export let isQuitting = false;
