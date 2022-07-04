@@ -9,7 +9,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { ChangeEventHandler, useState } from "react";
-import { Languages } from "../../ipcTypes";
+import { Languages } from "../../events/ipcTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { selectAppSettings, setSettings } from "../../redux/reducers/app";
 import { selectHasEditorOpened } from "../../redux/reducers/cells";

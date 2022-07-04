@@ -1,25 +1,7 @@
 import { readFile, writeFile } from "fs/promises";
 import { describe, expect, it, vi } from "vitest";
+import { EXAMPLE_STORAGE_PATH } from "../test-utils/mockElectron";
 import { Store } from "./Store";
-
-vi.mock("fs/promises", () => {
-  return {
-    writeFile: vi.fn(),
-    readFile: vi.fn(),
-  };
-});
-
-const EXAMPLE_STORAGE_PATH = "/home/testing/.config/js-notebook";
-
-vi.mock("electron", () => {
-  return {
-    app: {
-      getPath() {
-        return EXAMPLE_STORAGE_PATH;
-      },
-    },
-  };
-});
 
 describe("store class", () => {
   it("returns the correct name when initialized or changed", () => {

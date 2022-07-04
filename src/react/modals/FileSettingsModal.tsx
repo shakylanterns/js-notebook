@@ -14,7 +14,10 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { ChangeEventHandler, useState } from "react";
-import { FileSettings as FileSettingsModal, Languages } from "../../ipcTypes";
+import {
+  FileSettings as FileSettingsModal,
+  Languages,
+} from "../../events/ipcTypes";
 import { useAppSelector } from "../../redux/hooks";
 import { selectFileSettings } from "../../redux/reducers/cells";
 

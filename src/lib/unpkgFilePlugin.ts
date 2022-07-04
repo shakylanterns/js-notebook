@@ -1,6 +1,6 @@
 import { OnLoadResult, Plugin } from "esbuild-wasm";
 import { get, set } from "idb-keyval";
-import { Languages } from "../ipcTypes";
+import { Languages } from "../events/ipcTypes";
 
 export const unpkgFilePlugin = (input: string, language: Languages): Plugin => {
   const loader = language === "javascript" ? "jsx" : "tsx";

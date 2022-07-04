@@ -1,4 +1,4 @@
-import { FileSettings } from "../../ipcTypes";
+import { FileSettings } from "../../events/ipcTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
   savedFile,

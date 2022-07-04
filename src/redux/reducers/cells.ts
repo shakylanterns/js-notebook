@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { FileSettings } from "../../ipcTypes";
+import { FileSettings } from "../../events/ipcTypes";
 import { RootState } from "../store";
 
 export type CellType = "code" | "markdown";

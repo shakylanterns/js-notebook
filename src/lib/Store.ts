@@ -16,7 +16,7 @@ export class Store<T> {
 
   async open() {
     const data = await readFile(this.getPath());
-    return JSON.parse(data.toString());
+    return JSON.parse(data.toString()) as T;
   }
 
   getName() {

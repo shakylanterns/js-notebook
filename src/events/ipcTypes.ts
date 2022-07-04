@@ -1,3 +1,5 @@
+import { ipcMain } from "electron";
+
 export type EventTypes =
   | "show-save-dialog"
   | "save-file"
@@ -38,3 +40,5 @@ export type Languages = "javascript" | "typescript";
 export interface FileSettings {
   defaultLanguage: Languages;
 }
+
+export type IPCEventHandler = Parameters<typeof ipcMain.handle>[1];

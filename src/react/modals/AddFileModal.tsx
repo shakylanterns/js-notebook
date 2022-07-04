@@ -15,7 +15,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { ChangeEventHandler, useEffect, useState } from "react";
-import { FileSettings, Languages } from "../../ipcTypes";
+import { FileSettings, Languages } from "../../events/ipcTypes";
 import { useAppSelector } from "../../redux/hooks";
 import { selectAppSettings } from "../../redux/reducers/app";
 

@@ -1,6 +1,6 @@
 import objectMerge from "object-merge";
 import { Fragment, useEffect } from "react";
-import { ApplicationSettings } from "../ipcTypes";
+import { ApplicationSettings } from "../events/ipcTypes";
 import { useAppDispatch } from "../redux/hooks";
 import { setSettings } from "../redux/reducers/app";
 import { setRecentFiles } from "../redux/reducers/cells";

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ApplicationSettings } from "../../ipcTypes";
+import { ApplicationSettings } from "../../events/ipcTypes";
 import { RootState } from "../store";
 
 interface AppSlice {

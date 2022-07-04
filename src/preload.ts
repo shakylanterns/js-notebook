@@ -1,5 +1,9 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { ApplicationSettings, ApplicationState, IPCEvents } from "./ipcTypes";
+import {
+  ApplicationSettings,
+  ApplicationState,
+  IPCEvents,
+} from "./events/ipcTypes";
 
 const listenToWindowCloseClosure = () => {
   let ipcRendererRef: Electron.IpcRenderer = null;

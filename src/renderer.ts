@@ -2,7 +2,7 @@ import { render } from "./react";
 
 import { loader } from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
-import { ApplicationSettings, ApplicationState } from "./ipcTypes";
+import { ApplicationSettings, ApplicationState } from "./events/ipcTypes";
 
 declare global {
   interface Window {

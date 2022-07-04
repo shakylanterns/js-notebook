@@ -1,7 +1,7 @@
 import { Button, useDisclosure } from "@chakra-ui/react";
 import { Fragment } from "react";
 import { FaCog } from "react-icons/fa";
-import { FileSettings } from "../../ipcTypes";
+import { FileSettings } from "../../events/ipcTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { selectFilePath, setFileSettings } from "../../redux/reducers/cells";
 import { useTrySaveFile } from "../hooks/useTrySaveFile";

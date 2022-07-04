@@ -1,6 +1,6 @@
 import { Box, Button, useDisclosure } from "@chakra-ui/react";
 import { FaPlus } from "react-icons/fa";
-import { FileSettings } from "../../ipcTypes";
+import { FileSettings } from "../../events/ipcTypes";
 import { useAppDispatch } from "../../redux/hooks";
 import {
   setFileSettings,
