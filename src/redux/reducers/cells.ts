@@ -37,7 +37,7 @@ export interface SaveFileOptions {
   filePath?: string;
 }
 
-const initialState: CellSlice = {
+export const initialState: CellSlice = {
   cells: [],
   title: "",
   filePath: "",
@@ -52,23 +52,21 @@ const cellSlice = createSlice({
   name: "cells",
   reducers: {
     shiftCellBefore(state, action: PayloadAction<number>) {
-      // remove that element
-      const collected = state.cells.splice(action.payload, 1);
-      // something went wrong if there is nothing
-      if (collected.length !== 1) {
+      if (action.payload < 0 || action.payload >= state.cells.length) {
         return;
       }
+      // remove that element
+      const collected = state.cells.splice(action.payload, 1);
       // add before the previous element
       state.cells.splice(action.payload - 1, 0, collected[0]);
       state.touched = true;
     },
     shiftCellAfter(state, action: PayloadAction<number>) {
-      // remove that element
-      const collected = state.cells.splice(action.payload, 1);
-      // something went wrong if there is nothing
-      if (collected.length !== 1) {
+      if (action.payload < 0 || action.payload >= state.cells.length) {
         return;
       }
+      // remove that element
+      const collected = state.cells.splice(action.payload, 1);
       // add before the previous element
       state.cells.splice(action.payload + 1, 0, collected[0]);
       state.touched = true;
@@ -125,9 +123,17 @@ const cellSlice = createSlice({
       state.touched = true;
     },
     setRecentFiles(state, action: PayloadAction<string[]>) {
-      state.recentFiles = action.payload;
+      if (!action.payload) {
+        state.recentFiles = [];
+      } else {
+        state.recentFiles = action.payload;
+      }
     },
     addRecentFile(state, action: PayloadAction<string>) {
+      const found = state.recentFiles.findIndex((n) => n === action.payload);
+      if (found != -1) {
+        return;
+      }
       state.recentFiles.push(action.payload);
     },
     removeRecentFile(state, action: PayloadAction<string>) {
