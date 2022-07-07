@@ -1,5 +1,6 @@
 import { Box, Button, useDisclosure } from "@chakra-ui/react";
 import { FaPlus } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import { FileSettings } from "../../events/ipcTypes";
 import { useAppDispatch } from "../../redux/hooks";
 import {
@@ -12,6 +13,7 @@ import AddFileModal from "../modals/AddFileModal";
 const CreateNewNote = () => {
   const dispatch = useAppDispatch();
   const disclosure = useDisclosure();
+  const navigate = useNavigate();
 
   const onNewNoteBtnClick = () => {
     disclosure.onOpen();
@@ -22,6 +24,7 @@ const CreateNewNote = () => {
     dispatch(setTitle(title));
     dispatch(startEditor());
     disclosure.onClose();
+    navigate("/editor");
   }
 
   return (

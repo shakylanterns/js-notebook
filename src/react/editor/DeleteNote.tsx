@@ -1,6 +1,7 @@
 import { Button, useDisclosure } from "@chakra-ui/react";
 import { Fragment } from "react";
 import { FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { deleteNote, selectFilePath } from "../../redux/reducers/cells";
 import DeleteConfirm from "../modals/DeleteConfirm";
@@ -10,6 +11,7 @@ const DeleteNote = () => {
   const disclosure = useDisclosure();
   const dispatch = useAppDispatch();
   const filePath = useAppSelector(selectFilePath);
+  const navigate = useNavigate();
   const { createNotification } = useNotification();
 
   function onDeleteBtnClick() {
@@ -17,15 +19,23 @@ const DeleteNote = () => {
   }
 
   async function tryDeleteNote() {
-    const success = await window.electron.deleteNote(filePath);
-    if (success) {
-      dispatch(deleteNote(filePath));
-      createNotification("Deleted.", "success");
-    } else {
+    if (!filePath) {
       createNotification(
-        `Could not delete ${filePath}. Perhaps it is deleted already?`,
+        "This file is not saved yet, thus cannot be deleted...",
         "error"
       );
+    } else {
+      const success = await window.electron.deleteNote(filePath);
+      if (success) {
+        dispatch(deleteNote(filePath));
+        createNotification("Deleted.", "success");
+        navigate("/");
+      } else {
+        createNotification(
+          `Could not delete ${filePath}. Perhaps it is deleted already?`,
+          "error"
+        );
+      }
     }
     disclosure.onClose();
   }

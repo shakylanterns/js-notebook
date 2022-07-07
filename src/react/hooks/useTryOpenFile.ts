@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../redux/hooks";
 import {
   CellContent,
@@ -52,6 +53,7 @@ export const openFile = async (options: OpenFileOptions) => {
 export const useTryOpenFile = () => {
   const dispatch = useAppDispatch();
   const { createNotification } = useNotification();
+  const navigate = useNavigate();
 
   const startOpenFile = async (openFileOptions?: OpenFileOptions) => {
     try {
@@ -59,6 +61,7 @@ export const useTryOpenFile = () => {
       const items = parseContent(content);
       dispatch(openedFile({ filePath, ...items }));
       createNotification("File Opened", "success");
+      navigate("/editor");
     } catch (err) {
       if (err.message === "cancelled") {
         return;

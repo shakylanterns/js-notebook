@@ -1,11 +1,13 @@
-import { ChakraProvider, Flex } from "@chakra-ui/react";
+import { Box, ChakraProvider, Flex } from "@chakra-ui/react";
 import { useMonaco } from "@monaco-editor/react";
 import githubTheme from "monaco-themes/themes/GitHub Light.json";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Provider } from "react-redux";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import { initEsbuild } from "../lib/esbuildInit";
 import { store } from "../redux/store";
-import EditingArea from "./EditingArea";
+import Editor from "./editor/Editor";
+import HomeScreen from "./home/HomeScreen";
 import SaveBeforeQuitModal from "./modals/SaveBeforeQuitModal";
 import NotificationProvier from "./NotificationContext";
 import "./patch.css";
@@ -16,7 +18,6 @@ import { theme } from "./theme";
 
 const App = () => {
   const monaco = useMonaco();
-  const [inSettingsPage, setInSettingsPage] = useState(false);
 
   useEffect(() => {
     initEsbuild();
@@ -27,21 +28,26 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <SavedStateInitializer />
       <ChakraProvider theme={theme}>
         <NotificationProvier>
           <Flex>
-            <Sidebar
-              goToSettingsPage={() => setInSettingsPage(true)}
-              goToHomePage={() => setInSettingsPage(false)}
-            />
-            {inSettingsPage ? (
-              <SettingsScreen
-                exitSettingsPage={() => setInSettingsPage(false)}
-              />
-            ) : (
-              <EditingArea />
-            )}
+            <HashRouter>
+              <SavedStateInitializer />
+              <Sidebar />
+              <Box
+                flexGrow={1}
+                paddingX={8}
+                paddingTop={12}
+                maxWidth="90vw"
+                minHeight="100vh"
+              >
+                <Routes>
+                  <Route element={<Editor />} path="/editor" />
+                  <Route element={<SettingsScreen />} path="/settings" />
+                  <Route element={<HomeScreen />} path="/*" />
+                </Routes>
+              </Box>
+            </HashRouter>
           </Flex>
         </NotificationProvier>
         <SaveBeforeQuitModal />

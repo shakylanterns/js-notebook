@@ -9,6 +9,7 @@ import {
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../redux/hooks";
 import { closeEditor } from "../../redux/reducers/cells";
 import { useTrySaveFile } from "../hooks/useTrySaveFile";
@@ -21,9 +22,11 @@ const SaveBeforeClosingEditor = ({ disclosure }: Props) => {
   const { onClose, isOpen } = disclosure;
   const dispatch = useAppDispatch();
   const { startSaveFile } = useTrySaveFile();
+  const navigate = useNavigate();
 
   function onDoNotSaveBtnClick() {
     dispatch(closeEditor());
+    navigate("/");
     onClose();
   }
 

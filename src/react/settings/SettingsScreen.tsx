@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   ButtonGroup,
   FormControl,
@@ -8,21 +7,19 @@ import {
   Heading,
   Select,
 } from "@chakra-ui/react";
-import { ChangeEventHandler, useState } from "react";
+import { ChangeEventHandler, Fragment, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Languages } from "../../events/ipcTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { selectAppSettings, setSettings } from "../../redux/reducers/app";
 import { selectHasEditorOpened } from "../../redux/reducers/cells";
 import { useNotification } from "../NotificationContext";
 
-interface Props {
-  exitSettingsPage: () => void;
-}
-
-const SettingsScreen: React.FC<Props> = ({ exitSettingsPage }) => {
+const SettingsScreen = () => {
   const dispatch = useAppDispatch();
   const settings = useAppSelector(selectAppSettings);
   const isEditing = useAppSelector(selectHasEditorOpened);
+  const navigate = useNavigate();
   const [defaultLanguage, setDefaultLanguage] = useState(
     settings.defaultLanguage
   );
@@ -41,15 +38,8 @@ const SettingsScreen: React.FC<Props> = ({ exitSettingsPage }) => {
       createNotification("Settings cannot be saved", "error");
     }
   }
-
   return (
-    <Box
-      flexGrow={1}
-      paddingX={8}
-      paddingTop={12}
-      maxWidth="90vw"
-      minHeight="100vh"
-    >
+    <Fragment>
       <Heading marginBottom={12} fontSize="3xl" as="h1">
         Settings
       </Heading>
@@ -70,10 +60,10 @@ const SettingsScreen: React.FC<Props> = ({ exitSettingsPage }) => {
           Save Settings
         </Button>
         {isEditing && (
-          <Button onClick={exitSettingsPage}>Go Back to Editor</Button>
+          <Button onClick={() => navigate("/editor")}>Go Back to Editor</Button>
         )}
       </ButtonGroup>
-    </Box>
+    </Fragment>
   );
 };
 

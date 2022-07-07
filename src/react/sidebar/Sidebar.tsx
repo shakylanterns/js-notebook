@@ -1,6 +1,5 @@
 import { useDisclosure, VStack } from "@chakra-ui/react";
 import { Fragment } from "react";
-import { FaCog } from "react-icons/fa";
 import { useAppSelector } from "../../redux/hooks";
 import { selectHasEditorOpened } from "../../redux/reducers/cells";
 import { useTryOpenFile } from "../hooks/useTryOpenFile";
@@ -9,14 +8,9 @@ import Home from "./Home";
 import Open from "./Open";
 import Save from "./Save";
 import SaveAs from "./SaveAs";
-import SidebarIcon from "./SidebarIcon";
+import Settings from "./Settings";
 
-interface Props {
-  goToSettingsPage: () => void;
-  goToHomePage: () => void;
-}
-
-const Sidebar: React.FC<Props> = ({ goToSettingsPage, goToHomePage }) => {
+const Sidebar = () => {
   const disclosure = useDisclosure();
   const { startOpenFile } = useTryOpenFile();
   const isEditing = useAppSelector(selectHasEditorOpened);
@@ -32,7 +26,7 @@ const Sidebar: React.FC<Props> = ({ goToSettingsPage, goToHomePage }) => {
         minWidth="85px"
         maxWidth="10vw"
       >
-        <Home goToHomePage={goToHomePage} />
+        <Home />
         <Open disclosure={disclosure} />
         {isEditing && (
           <Fragment>
@@ -40,7 +34,7 @@ const Sidebar: React.FC<Props> = ({ goToSettingsPage, goToHomePage }) => {
             <SaveAs />
           </Fragment>
         )}
-        <SidebarIcon icon={FaCog} text="Settings" onClick={goToSettingsPage} />
+        <Settings />
       </VStack>
       <UnsavedFileModal disclosure={disclosure} startOpenFile={startOpenFile} />
     </Fragment>

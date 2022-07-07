@@ -1,7 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import installExtension, {
   REACT_DEVELOPER_TOOLS,
-  REDUX_DEVTOOLS,
+  REDUX_DEVTOOLS
 } from "electron-devtools-installer";
 import electronLocalshortcut from "electron-localshortcut";
 import { IPCEventsRegistry } from "./events/ipcEvents";
@@ -53,6 +53,10 @@ const createWindow = async () => {
     } else {
       mainWindow.webContents.openDevTools();
     }
+  });
+
+  electronLocalshortcut.register(mainWindow, "Ctrl+Shift+R", () => {
+    mainWindow.webContents.reload();
   });
 
   // maximize the window by default
