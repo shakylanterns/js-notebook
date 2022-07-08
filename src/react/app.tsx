@@ -9,7 +9,6 @@ import { store } from "../redux/store";
 import Editor from "./editor/Editor";
 import HomeScreen from "./home/HomeScreen";
 import SaveBeforeQuitModal from "./modals/SaveBeforeQuitModal";
-import NotificationProvier from "./NotificationContext";
 import "./patch.css";
 import SavedStateInitializer from "./SavedStateInitializer";
 import SettingsScreen from "./settings/SettingsScreen";
@@ -29,27 +28,25 @@ const App = () => {
   return (
     <Provider store={store}>
       <ChakraProvider theme={theme}>
-        <NotificationProvier>
-          <Flex>
-            <HashRouter>
-              <SavedStateInitializer />
-              <Sidebar />
-              <Box
-                flexGrow={1}
-                paddingX={8}
-                paddingTop={12}
-                maxWidth="90vw"
-                minHeight="100vh"
-              >
-                <Routes>
-                  <Route element={<Editor />} path="/editor" />
-                  <Route element={<SettingsScreen />} path="/settings" />
-                  <Route element={<HomeScreen />} path="/*" />
-                </Routes>
-              </Box>
-            </HashRouter>
-          </Flex>
-        </NotificationProvier>
+        <Flex>
+          <HashRouter>
+            <SavedStateInitializer />
+            <Sidebar />
+            <Box
+              flexGrow={1}
+              paddingX={8}
+              paddingTop={12}
+              maxWidth="90vw"
+              minHeight="100vh"
+            >
+              <Routes>
+                <Route element={<Editor />} path="/editor" />
+                <Route element={<SettingsScreen />} path="/settings" />
+                <Route element={<HomeScreen />} path="/*" />
+              </Routes>
+            </Box>
+          </HashRouter>
+        </Flex>
         <SaveBeforeQuitModal />
       </ChakraProvider>
     </Provider>

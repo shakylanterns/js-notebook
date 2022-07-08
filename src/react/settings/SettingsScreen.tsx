@@ -6,6 +6,7 @@ import {
   FormLabel,
   Heading,
   Select,
+  useToast,
 } from "@chakra-ui/react";
 import { ChangeEventHandler, Fragment, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -13,17 +14,16 @@ import { Languages } from "../../events/ipcTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { selectAppSettings, setSettings } from "../../redux/reducers/app";
 import { selectHasEditorOpened } from "../../redux/reducers/cells";
-import { useNotification } from "../NotificationContext";
 
 const SettingsScreen = () => {
   const dispatch = useAppDispatch();
   const settings = useAppSelector(selectAppSettings);
   const isEditing = useAppSelector(selectHasEditorOpened);
   const navigate = useNavigate();
+  const toast = useToast();
   const [defaultLanguage, setDefaultLanguage] = useState(
     settings.defaultLanguage
   );
-  const { createNotification } = useNotification();
 
   const onLanguageChange: ChangeEventHandler<HTMLSelectElement> = (event) => {
     setDefaultLanguage(event.target.value as Languages);
@@ -33,9 +33,9 @@ const SettingsScreen = () => {
     dispatch(setSettings({ defaultLanguage }));
     const success = await window.electron.saveSettings({ defaultLanguage });
     if (success) {
-      createNotification("Settings Saved", "success");
+      toast({ title: "Settings Saved", status: "success" });
     } else {
-      createNotification("Settings cannot be saved", "error");
+      toast({ title: "Settings cannot be saved...", status: "error" });
     }
   }
   return (

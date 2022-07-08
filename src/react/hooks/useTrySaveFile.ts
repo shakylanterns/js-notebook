@@ -1,3 +1,4 @@
+import { useToast } from "@chakra-ui/react";
 import { FileSettings } from "../../events/ipcTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
@@ -9,7 +10,6 @@ import {
   selectTitle,
   setFileError,
 } from "../../redux/reducers/cells";
-import { useNotification } from "../NotificationContext";
 
 const saveFile = async ({
   content,
@@ -41,12 +41,12 @@ export interface StartSaveFileOptions {
 }
 
 export const useTrySaveFile = () => {
-  const { createNotification } = useNotification();
   const dispatch = useAppDispatch();
   const title = useAppSelector(selectTitle);
   const cells = useAppSelector(selectCells);
   const settings = useAppSelector(selectFileSettings);
   const filePath = useAppSelector(selectFilePath);
+  const toast = useToast();
 
   const startSaveFile = async ({
     ignoreCurrentFilePath,
@@ -64,15 +64,23 @@ export const useTrySaveFile = () => {
         filePath,
       });
       dispatch(savedFile(path));
-      createNotification("File Saved", "success");
+      toast({ title: "File Saved", status: "success" });
     } catch (err) {
       dispatch(setFileError(err.message));
       if (err.message === "cancelled") {
         return;
       } else if (err.message.startsWith("ENOENT")) {
-        createNotification("File cannot be saved...", "error");
+        toast({
+          title: "Save Error",
+          description: `File cannot be saved!`,
+          status: "error",
+        });
       } else {
-        createNotification(err.message, "error");
+        toast({
+          title: "Save Error",
+          description: err.message,
+          status: "error",
+        });
       }
     }
   };

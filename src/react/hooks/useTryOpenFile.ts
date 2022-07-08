@@ -1,3 +1,4 @@
+import { useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../redux/hooks";
 import {
@@ -6,7 +7,6 @@ import {
   openedFile,
   setFileError,
 } from "../../redux/reducers/cells";
-import { useNotification } from "../NotificationContext";
 
 const parseContent = (content: string) => {
   const items = JSON.parse(content);
@@ -52,23 +52,31 @@ export const openFile = async (options: OpenFileOptions) => {
 
 export const useTryOpenFile = () => {
   const dispatch = useAppDispatch();
-  const { createNotification } = useNotification();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const startOpenFile = async (openFileOptions?: OpenFileOptions) => {
     try {
       const { content, filePath } = await openFile(openFileOptions || {});
       const items = parseContent(content);
       dispatch(openedFile({ filePath, ...items }));
-      createNotification("File Opened", "success");
+      toast({ title: "File Opened", status: "info" });
       navigate("/editor");
     } catch (err) {
       if (err.message === "cancelled") {
         return;
       } else if (err.message.startsWith("ENOENT")) {
-        createNotification("Perhaps that file is deleted...", "error");
+        toast({
+          title: "Cannot Open File",
+          description: "Perhaps that file is deleted...",
+          status: "error",
+        });
       } else {
-        createNotification("The file is probably malformed...", "error");
+        toast({
+          title: "Cannot Open File",
+          description: "The file is malformed.",
+          status: "error",
+        });
       }
       dispatch(setFileError(err.message));
     }
