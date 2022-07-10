@@ -1,4 +1,3 @@
-import { describe, expect, it } from "vitest";
 import { ApplicationSettings } from "../../events/ipcTypes";
 import { store } from "../store";
 import { selectAppSettings, setSettings } from "./app";

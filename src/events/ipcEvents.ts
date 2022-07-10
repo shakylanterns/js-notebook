@@ -7,7 +7,7 @@ import {
   ApplicationSettings,
   ApplicationState,
   IPCEventHandler,
-  IPCEvents,
+  IPCEvents
 } from "./ipcTypes";
 import { loadFile } from "./loadFile";
 import { loadFileDialog } from "./loadFileDialog";

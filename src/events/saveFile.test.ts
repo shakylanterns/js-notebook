@@ -1,5 +1,4 @@
 import { writeFile } from "fs/promises";
-import { describe, expect, it, vi } from "vitest";
 import { saveFile } from "./saveFile";
 
 describe("save file works", () => {
@@ -18,9 +17,9 @@ describe("save file works", () => {
 
   it("returns empty content and non empty error message when file not found", async () => {
     // simulate file not found
-    vi.mocked(writeFile).mockRejectedValue(new Error("error"));
+    jest.mocked(writeFile).mockRejectedValue(new Error("error"));
     const result = await saveFile(unusedObject, "dummy", "");
-    expect(result).toBeTypeOf("string");
+    expect(typeof result).toBe("string");
     expect(result).not.toBe("");
   });
 });

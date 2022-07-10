@@ -1,4 +1,3 @@
-import { describe, expect, it, vi } from "vitest";
 import { Store } from "../lib/Store";
 import { ApplicationSettings } from "./ipcTypes";
 import { saveSettings } from "./saveSettings";
@@ -7,7 +6,7 @@ describe("save settings works", () => {
   // this object is not used in this handler
   const unusedObject = {} as unknown as Electron.IpcMainInvokeEvent;
   const settingsStore = new Store<ApplicationSettings>("app");
-  const spySave = vi.spyOn(settingsStore, "save");
+  const spySave = jest.spyOn(settingsStore, "save");
 
   it("returns empty string if file is written", async () => {
     // simulate correct read file

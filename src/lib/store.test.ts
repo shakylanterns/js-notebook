@@ -1,8 +1,6 @@
 import { readFile, writeFile } from "fs/promises";
-import { describe, expect, it, vi } from "vitest";
-import { EXAMPLE_STORAGE_PATH } from "../test-utils/mockElectron";
+import { EXAMPLE_STORAGE_PATH } from "../test-utils/constants";
 import { Store } from "./Store";
-
 describe("store class", () => {
   it("returns the correct name when initialized or changed", () => {
     const store = new Store<Record<string, never>>("hello");
@@ -34,7 +32,7 @@ describe("store class", () => {
 
   it("reads the correct file", () => {
     const dummy = Buffer.from("{}");
-    vi.mocked(readFile).mockResolvedValue(dummy);
+    jest.mocked(readFile).mockResolvedValue(dummy);
 
     const store = new Store<{ dummy: string }>("dum");
     store.open();
@@ -48,7 +46,7 @@ describe("store class", () => {
       "defaultLanguage": "typescript"
     } 
     `);
-    vi.mocked(readFile).mockResolvedValue(correctData);
+    jest.mocked(readFile).mockResolvedValue(correctData);
 
     const store = new Store<{ defaultLanguage: string }>("dum");
     const result = await store.open();
@@ -64,7 +62,7 @@ describe("store class", () => {
       defaultLanguage: "typescript"
     } 
     `);
-    vi.mocked(readFile).mockResolvedValue(incorrectData);
+    jest.mocked(readFile).mockResolvedValue(incorrectData);
 
     const store = new Store<{ defaultLanguage: string }>("dum");
     await expect(store.open()).rejects.toThrow();

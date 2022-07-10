@@ -1,13 +1,11 @@
-import { describe, expect, it, vi } from "vitest";
 import { Store } from "../lib/Store";
 import { getApplicationState } from "./getApplicationState";
 import { ApplicationSettings } from "./ipcTypes";
-
 describe("get settings works", () => {
   // this object is not used in this handler
   const unusedObject = {} as unknown as Electron.IpcMainInvokeEvent;
   const settingsStore = new Store<ApplicationSettings>("app");
-  const spyOpen = vi.spyOn(settingsStore, "open");
+  const spyOpen = jest.spyOn(settingsStore, "open");
 
   it("returns the correct if file exists", async () => {
     const resultObj: ApplicationSettings = {
