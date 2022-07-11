@@ -1,4 +1,4 @@
-import { useToast } from "@chakra-ui/react";
+import { useToast, UseToastOptions } from "@chakra-ui/react";
 import { FileSettings } from "../../events/ipcTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
@@ -11,7 +11,7 @@ import {
   setFileError,
 } from "../../redux/reducers/cells";
 
-const saveFile = async ({
+export const saveFile = async ({
   content,
   ignoreCurrentFilePath,
   filePath,
@@ -22,11 +22,12 @@ const saveFile = async ({
     if (canceled) {
       throw new Error("cancelled");
     }
-    cellFilePath =
-      !filePath.endsWith(".jsnote") && !filePath.endsWith(".jsnote.json")
-        ? filePath + ".jsnote"
-        : filePath;
+    cellFilePath = filePath;
   }
+  cellFilePath =
+    !cellFilePath.endsWith(".jsnote") && !cellFilePath.endsWith(".jsnote.json")
+      ? cellFilePath + ".jsnote"
+      : cellFilePath;
   const error = await window.electron.saveFile(cellFilePath, content);
   if (error) {
     throw new Error(error);
@@ -39,6 +40,24 @@ export interface StartSaveFileOptions {
   // for immediate setting changes
   settings?: FileSettings;
 }
+
+export const notificationObject: {
+  saved: UseToastOptions;
+  notExist: UseToastOptions;
+  otherErrors: (err: Error) => UseToastOptions;
+} = {
+  saved: { title: "File Saved", status: "success" },
+  notExist: {
+    title: "Save Error",
+    description: `File cannot be saved!`,
+    status: "error",
+  },
+  otherErrors: (err: Error) => ({
+    title: "Save Error",
+    description: err.message,
+    status: "error",
+  }),
+};
 
 export const useTrySaveFile = () => {
   const dispatch = useAppDispatch();
@@ -64,23 +83,15 @@ export const useTrySaveFile = () => {
         filePath,
       });
       dispatch(savedFile(path));
-      toast({ title: "File Saved", status: "success" });
+      toast(notificationObject.saved);
     } catch (err) {
       dispatch(setFileError(err.message));
       if (err.message === "cancelled") {
         return;
       } else if (err.message.startsWith("ENOENT")) {
-        toast({
-          title: "Save Error",
-          description: `File cannot be saved!`,
-          status: "error",
-        });
+        toast(notificationObject.notExist);
       } else {
-        toast({
-          title: "Save Error",
-          description: err.message,
-          status: "error",
-        });
+        toast(notificationObject.otherErrors(err));
       }
     }
   };

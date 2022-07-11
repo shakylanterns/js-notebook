@@ -1,4 +1,4 @@
-import { useToast } from "@chakra-ui/react";
+import { useToast, UseToastOptions } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../redux/hooks";
 import {
@@ -8,7 +8,7 @@ import {
   setFileError,
 } from "../../redux/reducers/cells";
 
-const parseContent = (content: string) => {
+export const parseContent = (content: string) => {
   const items = JSON.parse(content);
   if (typeof items.title !== "string") {
     throw new Error("Parse Error: Document title is malformed");
@@ -50,6 +50,23 @@ export const openFile = async (options: OpenFileOptions) => {
   };
 };
 
+export const notificationObjects: Record<
+  "opened" | "deleted" | "malformed",
+  UseToastOptions
+> = {
+  opened: { title: "File Opened", status: "info" },
+  deleted: {
+    title: "Cannot Open File",
+    description: "Perhaps that file is deleted...",
+    status: "error",
+  },
+  malformed: {
+    title: "Cannot Open File",
+    description: "The file is malformed.",
+    status: "error",
+  },
+};
+
 export const useTryOpenFile = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -60,23 +77,15 @@ export const useTryOpenFile = () => {
       const { content, filePath } = await openFile(openFileOptions || {});
       const items = parseContent(content);
       dispatch(openedFile({ filePath, ...items }));
-      toast({ title: "File Opened", status: "info" });
+      toast(notificationObjects.opened);
       navigate("/editor");
     } catch (err) {
       if (err.message === "cancelled") {
         return;
       } else if (err.message.startsWith("ENOENT")) {
-        toast({
-          title: "Cannot Open File",
-          description: "Perhaps that file is deleted...",
-          status: "error",
-        });
+        toast(notificationObjects.deleted);
       } else {
-        toast({
-          title: "Cannot Open File",
-          description: "The file is malformed.",
-          status: "error",
-        });
+        toast(notificationObjects.malformed);
       }
       dispatch(setFileError(err.message));
     }
