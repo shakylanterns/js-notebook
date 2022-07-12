@@ -5,11 +5,8 @@ import { selectIsFileTouched } from "../../redux/reducers/cells";
 import { useTryOpenFile } from "../hooks/useTryOpenFile";
 import SidebarIcon from "./SidebarIcon";
 
-type Props = {
-  disclosure: ReturnType<typeof useDisclosure>;
-};
-
-const Open = ({ disclosure }: Props) => {
+const Open = () => {
+  const disclosure = useDisclosure();
   const { onOpen } = disclosure;
   const touched = useAppSelector(selectIsFileTouched);
   const { startOpenFile } = useTryOpenFile();

@@ -31,12 +31,25 @@ jest.mock("react-router-dom", () => {
   };
 });
 
-jest.mock("@chakra-ui/toast", () => {
-  const original = jest.requireActual("@chakra-ui/toast");
+jest.mock("@chakra-ui/react", () => {
+  const original = jest.requireActual("@chakra-ui/react");
+
+  // toast subpackage
   const useToastHook = jest.fn();
+
+  // disclosure subpackage
+  const onOpen = jest.fn();
+  const onClose = jest.fn();
+  const disclosureObject = {
+    isOpen: false,
+    onClose,
+    onOpen,
+  };
+
   return {
     ...original,
     useToast: () => useToastHook,
+    useDisclosure: () => disclosureObject,
   };
 });
 

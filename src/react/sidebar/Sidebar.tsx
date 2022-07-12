@@ -11,9 +11,9 @@ import SaveAs from "./SaveAs";
 import Settings from "./Settings";
 
 const Sidebar = () => {
+  const isEditing = useAppSelector(selectHasEditorOpened);
   const disclosure = useDisclosure();
   const { startOpenFile } = useTryOpenFile();
-  const isEditing = useAppSelector(selectHasEditorOpened);
   return (
     <Fragment>
       <VStack
@@ -27,7 +27,7 @@ const Sidebar = () => {
         maxWidth="10vw"
       >
         <Home />
-        <Open disclosure={disclosure} />
+        <Open />
         {isEditing && (
           <Fragment>
             <Save />
