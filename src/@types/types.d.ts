@@ -9,7 +9,7 @@ declare global {
       loadFile: (
         filePath: string
       ) => Promise<{ content: string; error: string }>;
-      listenToWindowClose: (callback: () => void) => void;
+      listenToWindowClose: (callback: (override?: boolean) => void) => void;
       quitProgram: (state: ApplicationState) => void;
       reloadApplicationState: () => Promise<ApplicationState | null>;
       deleteNote: (filePath: string) => Promise<boolean>;

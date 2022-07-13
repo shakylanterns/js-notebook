@@ -15,7 +15,12 @@ import { selectIsFileTouched } from "../../redux/reducers/cells";
 import { useQuitProgram } from "../hooks/useQuitProgram";
 import { useTrySaveFile } from "../hooks/useTrySaveFile";
 
-const SaveBeforeQuitModal = () => {
+interface Props {
+  // for testing purposes
+  show?: boolean;
+}
+
+const SaveBeforeQuitModal = ({ show }: Props) => {
   const touched = useAppSelector(selectIsFileTouched);
   const { startSaveFile } = useTrySaveFile();
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -33,13 +38,14 @@ const SaveBeforeQuitModal = () => {
   }
 
   useEffect(() => {
+    // temporary override solution
     window.electron.listenToWindowClose(() => {
       touched ? onOpen() : quitProgram();
     });
   }, [touched]);
 
   return (
-    <Modal onClose={onClose} isOpen={isOpen}>
+    <Modal onClose={onClose} isOpen={show || isOpen}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Unsaved Changes</ModalHeader>
