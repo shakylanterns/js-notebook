@@ -21,7 +21,10 @@ const DeleteNote = () => {
       >
         Delete
       </Button>
-      <DeleteConfirm disclosure={disclosure} deleteNote={tryDeleteNote} />
+      <DeleteConfirm
+        disclosure={disclosure}
+        deleteNote={() => tryDeleteNote(disclosure)}
+      />
     </Fragment>
   );
 };

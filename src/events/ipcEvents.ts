@@ -7,7 +7,7 @@ import {
   ApplicationSettings,
   ApplicationState,
   IPCEventHandler,
-  IPCEvents
+  IPCEvents,
 } from "./ipcTypes";
 import { loadFile } from "./loadFile";
 import { loadFileDialog } from "./loadFileDialog";
@@ -26,14 +26,14 @@ export class IPCEventsRegistry {
   };
 
   private getSettingsWrapper: IPCEventHandler = (_) => {
-    return getSettings(_, this.stateStore);
+    return getSettings(_, this.settingsStore);
   };
 
   private saveSettingsWrapper: IPCEventHandler = (
     _,
     state: ApplicationState
   ) => {
-    return saveSettings(_, state, this.stateStore);
+    return saveSettings(_, state, this.settingsStore);
   };
 
   private getApplicationStateWrapper: IPCEventHandler = (_) => {

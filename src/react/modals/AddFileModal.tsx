@@ -14,8 +14,9 @@ import {
   Select,
   useDisclosure,
 } from "@chakra-ui/react";
-import { ChangeEventHandler, useEffect, useState } from "react";
-import { FileSettings, Languages } from "../../events/ipcTypes";
+import { Formik } from "formik";
+import { Fragment, useEffect, useState } from "react";
+import { FileSettings } from "../../events/ipcTypes";
 import { useAppSelector } from "../../redux/hooks";
 import { selectAppSettings } from "../../redux/reducers/app";
 
@@ -27,7 +28,6 @@ type Props = {
 const AddFileModal: React.FC<Props> = ({ disclosure, createNewNote }) => {
   const settings = useAppSelector(selectAppSettings);
   const { onClose, isOpen } = disclosure;
-  const [title, setTitle] = useState("");
   const [defaultLanguage, setDefaultLanguage] = useState(
     settings.defaultLanguage
   );
@@ -38,53 +38,54 @@ const AddFileModal: React.FC<Props> = ({ disclosure, createNewNote }) => {
     setDefaultLanguage(settings.defaultLanguage);
   }, [settings]);
 
-  function onConfirmBtnClick() {
-    createNewNote(
-      {
-        defaultLanguage,
-      },
-      title
-    );
-  }
-
-  const onLanguageChange: ChangeEventHandler<HTMLSelectElement> = (event) => {
-    setDefaultLanguage(event.target.value as Languages);
-  };
-
-  const onTitleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setTitle(event.target.value);
-  };
-
   return (
     <Modal onClose={onClose} isOpen={isOpen}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Create Note</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-          <FormControl marginBottom={4}>
-            <FormLabel>Title</FormLabel>
-            <Input onChange={onTitleChange} value={title} />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Language</FormLabel>
-            <Select value={defaultLanguage} onChange={onLanguageChange}>
-              <option value="javascript">Javascript</option>
-              <option value="typescript">Typescript</option>
-            </Select>
-            <FormHelperText>
-              This determines the language of the snippets
-            </FormHelperText>
-          </FormControl>
-        </ModalBody>
-        <ModalFooter>
-          <Button colorScheme="primary" mr={3} onClick={onClose}>
-            Cancel
-          </Button>
-          <Button colorScheme="red" mr={3} onClick={onConfirmBtnClick}>
-            Confirm
-          </Button>
-        </ModalFooter>
+        <Formik
+          initialValues={{ title: "", language: defaultLanguage }}
+          onSubmit={(val) => {
+            console.log(val);
+            createNewNote({ defaultLanguage: val.language }, val.title);
+          }}
+        >
+          {(formik) => {
+            return (
+              <Fragment>
+                <ModalBody>
+                  <FormControl marginBottom={4}>
+                    <FormLabel>Title</FormLabel>
+                    <Input {...formik.getFieldProps("title")} />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Language</FormLabel>
+                    <Select {...formik.getFieldProps("language")}>
+                      <option value="javascript">Javascript</option>
+                      <option value="typescript">Typescript</option>
+                    </Select>
+                    <FormHelperText>
+                      This determines the language of the snippets
+                    </FormHelperText>
+                  </FormControl>
+                </ModalBody>
+                <ModalFooter>
+                  <Button colorScheme="primary" mr={3} onClick={onClose}>
+                    Cancel
+                  </Button>
+                  <Button
+                    colorScheme="green"
+                    mr={3}
+                    onClick={formik.submitForm}
+                  >
+                    Confirm
+                  </Button>
+                </ModalFooter>
+              </Fragment>
+            );
+          }}
+        </Formik>
       </ModalContent>
     </Modal>
   );

@@ -13,11 +13,9 @@ import {
   Select,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { ChangeEventHandler, useState } from "react";
-import {
-  FileSettings as FileSettingsModal,
-  Languages,
-} from "../../events/ipcTypes";
+import { Formik } from "formik";
+import React, { Fragment } from "react";
+import { FileSettings as FileSettingsModal } from "../../events/ipcTypes";
 import { useAppSelector } from "../../redux/hooks";
 import { selectFileSettings } from "../../redux/reducers/cells";
 
@@ -33,18 +31,7 @@ const FileSettingsModal: React.FC<Props> = ({
   const settings = useAppSelector(selectFileSettings) || {
     defaultLanguage: "javascript",
   };
-  const [defaultLanguage, setDefaultLanguage] = useState<Languages>(
-    settings.defaultLanguage
-  );
   const { onClose, isOpen } = disclosure;
-
-  const onLanguageChange: ChangeEventHandler<HTMLSelectElement> = (event) => {
-    setDefaultLanguage(event.target.value as Languages);
-  };
-
-  function onSaveButtonClick() {
-    setFileSettings({ defaultLanguage });
-  }
 
   return (
     <Modal onClose={onClose} isOpen={isOpen}>
@@ -52,26 +39,39 @@ const FileSettingsModal: React.FC<Props> = ({
       <ModalContent>
         <ModalHeader>File Settings</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-          <FormControl>
-            <FormLabel>Language</FormLabel>
-            <Select value={defaultLanguage} onChange={onLanguageChange}>
-              <option value="javascript">Javascript</option>
-              <option value="typescript">Typescript</option>
-            </Select>
-            <FormHelperText>
-              This determines the language of the snippets
-            </FormHelperText>
-          </FormControl>
-        </ModalBody>
-        <ModalFooter>
-          <Button colorScheme="primary" mr={3} onClick={onClose}>
-            Cancel
-          </Button>
-          <Button colorScheme="red" mr={3} onClick={onSaveButtonClick}>
-            Save Settings
-          </Button>
-        </ModalFooter>
+        <Formik
+          initialValues={{ language: settings.defaultLanguage }}
+          onSubmit={(values) =>
+            setFileSettings({ defaultLanguage: values.language })
+          }
+        >
+          {(formik) => {
+            return (
+              <Fragment>
+                <ModalBody>
+                  <FormControl>
+                    <FormLabel>Language</FormLabel>
+                    <Select {...formik.getFieldProps("language")}>
+                      <option value="javascript">Javascript</option>
+                      <option value="typescript">Typescript</option>
+                    </Select>
+                    <FormHelperText>
+                      This determines the language of the snippets
+                    </FormHelperText>
+                  </FormControl>
+                </ModalBody>
+                <ModalFooter>
+                  <Button colorScheme="primary" mr={3} onClick={onClose}>
+                    Cancel
+                  </Button>
+                  <Button colorScheme="red" mr={3} onClick={formik.submitForm}>
+                    Save Settings
+                  </Button>
+                </ModalFooter>
+              </Fragment>
+            );
+          }}
+        </Formik>
       </ModalContent>
     </Modal>
   );

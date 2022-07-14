@@ -62,6 +62,7 @@
     "electron-localshortcut": "^3.2.1",
     "electron-squirrel-startup": "^1.0.0",
     "esbuild-wasm": "^0.16.10",
+    "formik": "^2.2.9",
     "framer-motion": "^8.0.2",
     "idb-keyval": "^6.2.0",
     "katex": "^0.16.4",
