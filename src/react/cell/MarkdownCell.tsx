@@ -1,6 +1,5 @@
 import { Box, Text } from "@chakra-ui/react";
 import Editor, { OnMount } from "@monaco-editor/react";
-import "katex/dist/katex.min.css";
 import { editor } from "monaco-editor";
 import { useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";

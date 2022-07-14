@@ -49,7 +49,7 @@ jest.mock("@chakra-ui/react", () => {
   return {
     ...original,
     useToast: () => useToastHook,
-    useDisclosure: () => disclosureObject,
+    useDisclosure: jest.fn(() => disclosureObject),
   };
 });
 

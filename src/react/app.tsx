@@ -1,5 +1,6 @@
 import { Box, ChakraProvider, Flex } from "@chakra-ui/react";
 import { useMonaco } from "@monaco-editor/react";
+import "katex/dist/katex.min.css";
 import githubTheme from "monaco-themes/themes/GitHub Light.json";
 import { useEffect } from "react";
 import { Provider } from "react-redux";
