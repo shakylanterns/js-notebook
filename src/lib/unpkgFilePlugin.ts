@@ -41,7 +41,7 @@ export const unpkgFilePlugin = (input: string, language: Languages): Plugin => {
       });
 
       // here we just return what the user has typed in the cell
-      build.onLoad({ filter: /^index\.js$/, namespace: "u" }, () => {
+      build.onLoad({ filter: /^index\.(j|t)s$/, namespace: "u" }, () => {
         return {
           contents: input,
           loader,

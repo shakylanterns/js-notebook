@@ -13,6 +13,7 @@ import SaveBeforeQuitModal from "./modals/SaveBeforeQuitModal";
 import "./patch.css";
 import SavedStateInitializer from "./SavedStateInitializer";
 import SettingsScreen from "./settings/SettingsScreen";
+import Shortcuts from "./Shortcuts";
 import Sidebar from "./sidebar/Sidebar";
 import { theme } from "./theme";
 
@@ -32,6 +33,7 @@ const App = () => {
         <Flex>
           <HashRouter>
             <SavedStateInitializer />
+            <Shortcuts />
             <Sidebar />
             <Box
               flexGrow={1}
