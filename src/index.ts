@@ -1,8 +1,9 @@
 import { app, BrowserWindow } from "electron";
 import installExtension, {
   REACT_DEVELOPER_TOOLS,
-  REDUX_DEVTOOLS
+  REDUX_DEVTOOLS,
 } from "electron-devtools-installer";
+import isDev from "electron-is-dev";
 import electronLocalshortcut from "electron-localshortcut";
 import { IPCEventsRegistry } from "./events/ipcEvents";
 import { IPCEvents } from "./events/ipcTypes";
@@ -66,7 +67,9 @@ const createWindow = async () => {
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+  }
 
   // so that the user cannot see the window change from small to large
   mainWindow.show();

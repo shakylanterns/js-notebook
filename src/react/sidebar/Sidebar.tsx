@@ -17,6 +17,7 @@ const Sidebar = () => {
   return (
     <Fragment>
       <VStack
+        position={"fixed"}
         borderRightWidth={0.5}
         borderRightColor="gray.400"
         paddingTop={12}

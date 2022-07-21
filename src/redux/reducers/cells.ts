@@ -115,6 +115,10 @@ const cellSlice = createSlice({
       state.filePath = "";
       state.fileError = "";
       state.touched = false;
+
+      // delete the states
+      state.cells = [];
+      state.title = "";
     },
     startEditor(state) {
       state.hasEditorOpened = true;

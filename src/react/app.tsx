@@ -41,6 +41,7 @@ const App = () => {
               paddingTop={12}
               maxWidth="90vw"
               minHeight="100vh"
+              marginLeft={36}
             >
               <Routes>
                 <Route element={<Editor />} path="/editor" />

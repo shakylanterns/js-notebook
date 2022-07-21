@@ -181,7 +181,7 @@ const CodeCell: React.FC<Props> = ({ text, index }) => {
         display={isRunning ? "block" : "none"}
         marginTop={4}
       >
-        <iframe ref={iframe} sandbox="allow-scripts"></iframe>
+        <iframe ref={iframe} sandbox="allow-scripts" width={"100%"}></iframe>
       </Box>
     </Box>
   );
