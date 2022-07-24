@@ -1,0 +1,28 @@
+{
+  "title": "Observable Pattern in JavaScript",
+  "cells": [
+    {
+      "type": "markdown",
+      "text": "The observable pattern is a design pattern which is widely used in programming. The library `rxjs` provides\na lot of utilities for us, including observables, pipes, subjects etc."
+    },
+    {
+      "type": "markdown",
+      "text": "## What is a observable?\n\nObservable is an object that can be observed by its subscribers. When the observable pushes a change, all\nsubscribers will *react* to that change by invoking the subscriber callback. Here is an example:"
+    },
+    {
+      "type": "code",
+      "text": "import { Observable } from \"rxjs\";\n\nconst ob = new Observable((subscriber) => {\n  let i = 0;\n  setInterval(() => {\n    // pushing changes to the subscribers\n    subscriber.next(i);\n    i = i + 1;\n  }, 2000);\n});\n\nconst addNodeToDom = (x) => {\n  const p = document.createElement(\"p\");\n  p.textContent = `Now x is ${x}`;\n  document.body.appendChild(p);\n};\n\nob.subscribe(addNodeToDom);\n\n"
+    },
+    {
+      "type": "markdown",
+      "text": "`addNodeToDom` is invoked everytime `next` is called. In the example above the observer never ends, it just keeps pushing changes to\nits subscribers. To stop it, we can call `complete` or `error`"
+    },
+    {
+      "type": "code",
+      "text": "import { Observable } from \"rxjs\";\n\nconst ob = new Observable((subscriber) => {\n  let i = 0;\n  let interval = setInterval(() => {\n    // pushing changes to the subscribers\n    subscriber.next(i);\n    i = i + 1;\n    // this time we end the interval\n    if (i > 5) {\n      clearInterval(interval);\n      subscriber.complete();\n    }\n  }, 2000);\n});\n\nconst addNodeToDom = (x) => {\n  const p = document.createElement(\"p\");\n  p.textContent = `Now x is ${x}`;\n  document.body.appendChild(p);\n};\n\nconst completed = () => {\n  const p = document.createElement(\"p\");\n  p.textContent = `No more things should be added to the DOM!`;\n  document.body.appendChild(p);\n};\n\nob.subscribe({ next: addNodeToDom, complete: completed });"
+    }
+  ],
+  "settings": {
+    "defaultLanguage": "javascript"
+  }
+}

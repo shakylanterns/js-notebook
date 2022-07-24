@@ -1,0 +1,24 @@
+{
+  "title": "React",
+  "cells": [
+    {
+      "type": "markdown",
+      "text": "## What is React?\n\nReact is a library for building user interfaces. Unlike traditional JQuery websites, React is functional in design. With React\nyou do not update the browser DOM by yourself, React will update the DOM for you by comparing the changes of states.\n\nBelow is an example of counter component."
+    },
+    {
+      "type": "markdown",
+      "text": "Here is some dummy text."
+    },
+    {
+      "type": "code",
+      "text": "import React, { useState, Fragment } from \"react\"\nimport ReactDOM from \"react-dom\"\n\nconst Counter = () => {\n  // initialize state\n  const [value, setValue] = useState(0)\n\n  const increment = () => {\n    setValue(value + 1)\n  }\n\n  return (\n    <Fragment>\n      <p style={{ fontSize: \"2rem\" }}>{value}</p>\n      <button onClick={increment}>Add 1 To Counter</button>\n    </Fragment>\n  )\n}\n\nReactDOM.render(<Counter />, document.getElementById(\"root\"))"
+    },
+    {
+      "type": "markdown",
+      "text": "## Motivation\n\nEach time when React receives a state update (e.g. by `setValue` hook), it re-runs the whole Component function again. After running the\nfunction, it finally updates the DOM with the new state value. This prevents a lot of unnecessary DOM writes.\n\nHowever, the most important aspect of React is that it provides a structured way for us to write large web applications."
+    }
+  ],
+  "settings": {
+    "defaultLanguage": "javascript"
+  }
+}
