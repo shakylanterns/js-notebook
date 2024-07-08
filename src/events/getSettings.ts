@@ -7,6 +7,8 @@ export const getSettings: IPCEventHandler = async (
 ) => {
   try {
     const state = await settingsStore.open();
+    console.log(state);
+    console.log(settingsStore.getPath());
     return state;
   } catch (err) {
     return null;

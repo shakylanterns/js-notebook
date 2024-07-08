@@ -33,12 +33,15 @@ const SavedStateInitializer = () => {
   useEffect(() => {
     const loadSettings = async () => {
       const state = await window.electron.getSettings();
-      const merged = objectMerge(
-        {
-          defaultLanguage: "javascript",
-        },
-        state
-      );
+      const defaultSettings = {
+        defaultLanguage: "javascript",
+      };
+      let merged;
+      if (!state) {
+        merged = defaultSettings;
+      } else {
+        merged = objectMerge(defaultSettings, state);
+      }
       dispatch(setSettings(merged as ApplicationSettings));
     };
 

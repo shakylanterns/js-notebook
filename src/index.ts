@@ -1,8 +1,4 @@
 import { app, BrowserWindow } from "electron";
-import installExtension, {
-  REACT_DEVELOPER_TOOLS,
-  REDUX_DEVTOOLS,
-} from "electron-devtools-installer";
 import isDev from "electron-is-dev";
 import electronLocalshortcut from "electron-localshortcut";
 import { IPCEventsRegistry } from "./events/ipcEvents";
@@ -30,12 +26,12 @@ const createWindow = async () => {
 
   const registry = new IPCEventsRegistry();
 
-  try {
-    await installExtension(REDUX_DEVTOOLS);
-    await installExtension(REACT_DEVELOPER_TOOLS);
-  } catch (err) {
-    console.log("Cannot install devtools!");
-  }
+  // try {
+  //   await installExtension(REDUX_DEVTOOLS);
+  //   await installExtension(REACT_DEVELOPER_TOOLS);
+  // } catch (err) {
+  //   console.log("Cannot install devtools!");
+  // }
 
   mainWindow.on("close", (event) => {
     if (registry.isQuitting) {

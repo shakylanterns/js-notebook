@@ -27,6 +27,7 @@ type Props = {
 
 const AddFileModal: React.FC<Props> = ({ disclosure, createNewNote }) => {
   const settings = useAppSelector(selectAppSettings);
+  console.log(settings);
   const { onClose, isOpen } = disclosure;
   const [defaultLanguage, setDefaultLanguage] = useState(
     settings.defaultLanguage
